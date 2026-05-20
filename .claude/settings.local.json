@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Start-Process \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\123\\\\��������.html\")",
+      "WebSearch",
+      "PowerShell(Get-WmiObject Win32_BaseBoard)",
+      "PowerShell(Get-CimInstance -ClassName Win32_ComputerSystem)",
+      "PowerShell(Get-CimInstance -ClassName Win32_BaseBoard)",
+      "PowerShell(npx skills add pptx -y -g)",
+      "Bash(ls -la ~/.claude/sessions/)",
+      "Read(//c/Users/Administrator/.claude/sessions/**)"
+    ]
+  }
+}

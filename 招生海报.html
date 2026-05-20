@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>咔乐艺术幼小衔接招生</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .poster {
+            width: 600px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9ff 100%);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 50%, #ffcc00 100%);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='10' cy='10' r='3' fill='rgba(255,255,255,0.2)'/%3E%3Ccircle cx='90' cy='30' r='5' fill='rgba(255,255,255,0.15)'/%3E%3Ccircle cx='50' cy='80' r='4' fill='rgba(255,255,255,0.1)'/%3E%3C/svg%3E");
+            background-size: 50px 50px;
+        }
+
+        .logo-container {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+            background: white;
+        }
+
+        .brand-name {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-title {
+            font-size: 42px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            letter-spacing: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #eee;
+        }
+
+        .subtitle::before {
+            content: "✨ ";
+        }
+
+        .subtitle::after {
+            content: " ✨";
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-item {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #e0e8ff;
+            transition: transform 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .info-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .info-value.price {
+            color: #ff4757;
+            font-size: 28px;
+        }
+
+        .schedule-section {
+            background: linear-gradient(135deg, #fff5f5 0%, #fff0e6 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #ffe4d4;
+        }
+
+        .schedule-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .schedule-title::before {
+            content: "⏰ ";
+        }
+
+        .time-blocks {
+            display: flex;
+            justify-content: space-around;
+            gap: 15px;
+        }
+
+        .time-block {
+            flex: 1;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .time-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 8px;
+        }
+
+        .time-value {
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .features {
+            background: linear-gradient(135deg, #e8fff0 0%, #d4ffe6 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #c8f0d8;
+        }
+
+        .features-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .features-title::before {
+            content: "📚 ";
+        }
+
+        .features-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .features-list li {
+            font-size: 15px;
+            color: #444;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 5px;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .contact-title {
+            font-size: 18px;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .contact-title::before {
+            content: "📞 ";
+        }
+
+        .phone-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 14px;
+            border-top: 1px dashed #eee;
+        }
+
+        .decoration {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.1;
+        }
+
+        .star1 { top: 20px; left: 20px; }
+        .star2 { top: 30px; right: 30px; }
+        .star3 { bottom: 100px; left: 15px; }
+        .star4 { bottom: 80px; right: 20px; }
+    </style>
+</head>
+<body>
+    <div class="poster">
+        <div class="header">
+            <div class="logo-container">
+                <img src="8360f9eb3003dffe9ed21adeb7cd8479.jpg" alt="咔乐艺术Logo" class="logo">
+            </div>
+            <div class="brand-name">咔乐艺术</div>
+            <div class="main-title">幼小衔接班</div>
+        </div>
+
+        <div class="content">
+            <div class="subtitle">让孩子轻松过渡，快乐入学</div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-icon">💰</div>
+                    <div class="info-label">课程费用</div>
+                    <div class="info-value price">¥1580</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">📅</div>
+                    <div class="info-label">课程时长</div>
+                    <div class="info-value">4周</div>
+                </div>
+            </div>
+
+            <div class="schedule-section">
+                <div class="schedule-title">上课时间（半天制）</div>
+                <div class="time-blocks">
+                    <div class="time-block">
+                        <div class="time-label">☀️ 上午班</div>
+                        <div class="time-value">8:30 - 11:30</div>
+                    </div>
+                    <div class="time-block">
+                        <div class="time-label">🌙 下午班</div>
+                        <div class="time-value">2:30 - 5:30</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="features-title">课程内容</div>
+                <ul class="features-list">
+                    <li>拼音启蒙学习</li>
+                    <li>数学思维训练</li>
+                    <li>识字阅读基础</li>
+                    <li>书写规范练习</li>
+                    <li>专注力培养</li>
+                    <li>学习习惯养成</li>
+                </ul>
+            </div>
+
+            <div class="contact-section">
+                <div class="contact-title">报名咨询电话</div>
+                <div class="phone-number">177 5512 3937</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            名额有限，欲报从速！
+        </div>
+    </div>
+</body>
+</html>

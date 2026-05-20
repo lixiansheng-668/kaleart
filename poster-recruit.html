@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1920px;
+    background: #FAFAF7;
+    font-family: 'Microsoft YaHei', 'PingFang SC', 'Heiti SC', sans-serif;
+    color: #2C2C2C;
+    position: relative; overflow: hidden;
+  }
+
+  /* background texture */
+  .bg-dot {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(circle, #E8DDD8 1px, transparent 1px);
+    background-size: 40px 40px; opacity: 0.25; z-index: 0;
+  }
+
+  /* top thin red line */
+  .top-line {
+    position: absolute; top: 120px; left: 120px;
+    width: 100px; height: 4px; background: #C84B3C; z-index: 2;
+  }
+
+  /* hero price zone */
+  .hero-zone {
+    position: absolute; top: 320px; left: 120px; right: 120px; z-index: 2;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 28px; color: #C84B3C; letter-spacing: 6px;
+    border: 1px solid #C84B3C; padding: 8px 28px; margin-bottom: 48px;
+  }
+  .course-name {
+    font-size: 56px; font-weight: 700; letter-spacing: 14px;
+    color: #2C2C2C; line-height: 1.4;
+  }
+  .group-badge {
+    display: inline-block;
+    font-size: 32px; font-weight: 700; color: #FFFFFF;
+    background: #C84B3C; border-radius: 8px;
+    padding: 10px 32px; margin-top: 36px; letter-spacing: 6px;
+  }
+  .price-block { margin-top: 36px; }
+  .price-old {
+    font-size: 32px; color: #B0B0B0; text-decoration: line-through;
+    letter-spacing: 4px;
+  }
+  .price-new {
+    font-size: 140px; font-weight: 900; color: #C84B3C;
+    letter-spacing: -2px; line-height: 1;
+  }
+  .price-unit {
+    font-size: 36px; font-weight: 400; color: #C84B3C;
+    letter-spacing: 4px;
+  }
+  .price-detail {
+    font-size: 28px; color: #7A7A7A; letter-spacing: 6px; margin-top: 12px;
+  }
+
+  /* middle highlight bar */
+  .highlight-bar {
+    position: absolute; top: 1220px; left: 120px; right: 120px;
+    background: #FFF5ED; border-left: 4px solid #C84B3C; z-index: 2;
+    padding: 36px 40px;
+  }
+  .highlight-item {
+    font-size: 30px; color: #4A4A4A; letter-spacing: 4px; line-height: 1.8;
+  }
+  .highlight-dot {
+    display: inline-block; width: 8px; height: 8px;
+    background: #C84B3C; border-radius: 50%; margin-right: 16px; vertical-align: middle;
+  }
+
+  /* bottom info */
+  .info-zone {
+    position: absolute; bottom: 220px; left: 120px; z-index: 2;
+  }
+  .info-line {
+    font-size: 26px; color: #9A9A9A; letter-spacing: 4px; line-height: 2;
+  }
+  .info-label { color: #C84B3C; font-weight: 600; }
+
+  /* QR placeholder */
+  .qr-zone {
+    position: absolute; bottom: 200px; right: 120px; z-index: 2;
+    text-align: center;
+  }
+  .qr-placeholder {
+    width: 140px; height: 140px; border: 2px dashed #D0D0D0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #C0C0C0; letter-spacing: 2px;
+  }
+  .qr-text { font-size: 22px; color: #B0B0B0; letter-spacing: 2px; margin-top: 12px; }
+
+  /* bottom accent */
+  .bottom-bar {
+    position: absolute; bottom: 100px; left: 120px; right: 120px;
+    height: 1px; background: #E8E0DC; z-index: 2;
+  }
+  .bottom-text {
+    position: absolute; bottom: 60px; left: 120px;
+    font-size: 20px; color: #C8C8C8; letter-spacing: 6px; z-index: 2;
+  }
+
+  /* abstract paint splash */
+  .splash-1 {
+    position: absolute; top: 600px; right: 80px;
+    width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,75,60,0.08) 0%, transparent 70%);
+    z-index: 1;
+  }
+  .splash-2 {
+    position: absolute; bottom: 500px; left: -80px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,150,120,0.06) 0%, transparent 70%);
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-dot"></div>
+  <div class="splash-1"></div>
+  <div class="splash-2"></div>
+  <div class="top-line"></div>
+
+  <div class="hero-zone">
+    <div class="tag">&#x6691;&#x671F;&#x62DB;&#x751F;</div>
+    <div class="course-name">&#x5494;&#x4E50;&#x827A;&#x672F;<br>&#x6691;&#x5047;&#x7279;&#x8BAD;&#x73ED;</div>
+    <div class="group-badge">3&#x4EBA;&#x56E2;</div>
+    <div class="price-block">
+      <span class="price-old">&#xFFE5;800</span>
+      <br>
+      <span class="price-new">&#xFFE5;680</span>
+      <span class="price-unit"> /10&#x6B21;&#x8BFE;</span>
+    </div>
+    <div class="price-detail">&#x5355;&#x6B21;&#x4EC5; 68 &#x5143; &#xB7; &#x4EAB;&#x5E74;&#x8BFE;&#x8D85;&#x4F4E;&#x5355;&#x4EF7;</div>
+  </div>
+
+  <div class="highlight-bar">
+    <div class="highlight-item"><span class="highlight-dot"></span>&#x5C11;&#x513F;&#x7F8E;&#x672F; &nbsp;/&nbsp; &#x786C;&#x7B14;&#x4E66;&#x6CD5; &nbsp;/&nbsp; &#x7D20;&#x63CF;&#x8272;&#x5F69; &nbsp;/&nbsp; &#x821E;&#x8E48;</div>
+    <div class="highlight-item"><span class="highlight-dot"></span>4-16 &#x5C81;&#x5206;&#x9F84;&#x6BB5;&#x5C0F;&#x73ED;&#x6559;&#x5B66;</div>
+    <div class="highlight-item"><span class="highlight-dot"></span>&#x62A5;&#x540D;&#x5373;&#x9001; 100 &#x5143;&#x7EED;&#x8D39;&#x62B5;&#x7528;&#x5238;</div>
+  </div>
+
+  <div class="info-zone">
+    <div class="info-line"><span class="info-label">&#x54C6;&#x4E50;&#x827A;&#x672F;</span> &#x5408;&#x80A5; &#xB7; &#x656C;&#x8BF7;&#x6765;&#x7535;&#x54A8;&#x8BE2;</div>
+    <div class="info-line">&#x5730;&#x5740;&#xFF1A;_______________</div>
+    <div class="info-line">&#x7535;&#x8BDD;&#xFF1A;_______________</div>
+  </div>
+
+  <div class="qr-zone">
+    <div class="qr-placeholder">&#x4E8C;&#x7EF4;&#x7801;</div>
+    <div class="qr-text">&#x626B;&#x7801;&#x54A8;&#x8BE2;</div>
+  </div>
+
+  <div class="bottom-bar"></div>
+  <div class="bottom-text">&#x5494;&#x4E50;&#x827A;&#x672F; &#xB7; &#x96C6;&#x521B;&#x610F;&#x7F8E;&#x672F;&#x4E0E;&#x4E66;&#x6CD5;&#x57F9;&#x8BAD;</div>
+</body>
+</html>

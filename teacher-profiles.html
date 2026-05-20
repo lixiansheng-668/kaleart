@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>咔乐艺术 · 教师风采</title>
+<style>
+  :root {
+    --warm: #e07c5a;
+    --warm-light: #fdf0eb;
+    --cream: #fef9f5;
+    --ink: #3d322b;
+    --ink-light: #8b7b6f;
+    --card-bg: #ffffff;
+    --border: #f0e4da;
+    --shadow: 0 2px 16px rgba(61,50,43,0.07);
+    --radius: 14px;
+    --font-cn: "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: var(--font-cn);
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #e07c5a 0%, #d4694a 100%);
+    color: #fff;
+    padding: 28px 20px 22px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(224,124,90,0.25);
+  }
+  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+  .header p  { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 88px;
+    z-index: 99;
+  }
+  .tabs button {
+    flex: 1;
+    padding: 14px 8px;
+    border: none;
+    background: none;
+    font-size: 15px;
+    font-family: var(--font-cn);
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .tabs button.active {
+    color: var(--warm);
+    font-weight: 600;
+  }
+  .tabs button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 20%; right: 20%;
+    height: 3px;
+    background: var(--warm);
+    border-radius: 2px;
+  }
+
+  /* ── Container ── */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  /* ── Section ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── Teacher Cards (View Mode) ── */
+  .teacher-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .teacher-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .teacher-card:active { transform: scale(0.985); }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 20px 16px;
+  }
+  .card-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--warm-light);
+    flex-shrink: 0;
+    background: var(--warm-light);
+  }
+  .card-avatar-placeholder {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f0c4b0, #e8a88c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .card-title { flex: 1; }
+  .card-title h3 { font-size: 20px; font-weight: 700; color: var(--ink); }
+  .card-title .tagline { font-size: 13px; color: var(--warm); margin-top: 2px; }
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .card-meta span {
+    font-size: 12px;
+    background: var(--warm-light);
+    color: var(--warm);
+    padding: 2px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .card-body { padding: 0 20px 20px; }
+  .card-body .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--warm);
+    margin: 12px 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-body .section-title::before {
+    content: '';
+    width: 4px; height: 14px;
+    background: var(--warm);
+    border-radius: 2px;
+  }
+  .card-body p, .card-body .tags { font-size: 14px; color: var(--ink); }
+  .card-body .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .card-body .tag {
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: 4px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  .card-body .message-box {
+    background: var(--warm-light);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.7;
+    position: relative;
+  }
+  .message-box::before {
+    content: '❤';
+    position: absolute;
+    top: -10px; left: 16px;
+    font-size: 16px;
+  }
+
+  /* ── Empty State ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-light);
+  }
+  .empty-state .icon { font-size: 56px; margin-bottom: 16px; }
+  .empty-state h3 { font-size: 17px; margin-bottom: 6px; color: var(--ink); }
+  .empty-state p { font-size: 13px; }
+
+  /* ── Form (Edit Mode) ── */
+  .form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .form-header h2 { font-size: 18px; color: var(--ink); }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .form-group label .hint {
+    font-weight: 400;
+    font-size: 12px;
+    color: #bbb;
+    margin-left: 6px;
+  }
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: var(--font-cn);
+    color: var(--ink);
+    background: #fff;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--warm);
+    box-shadow: 0 0 0 3px rgba(224,124,90,0.08);
+  }
+  .form-group textarea { min-height: 80px; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .photo-upload {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .photo-preview {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px dashed var(--border);
+    background: #fafafa;
+  }
+  .photo-upload input[type="file"] { display: none; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: var(--font-cn);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--warm); color: #fff; }
+  .btn-primary:hover { background: #cf6e4d; }
+  .btn-outline {
+    background: #fff;
+    color: var(--warm);
+    border: 1.5px solid var(--warm);
+  }
+  .btn-outline:hover { background: var(--warm-light); }
+  .btn-sm { padding: 6px 16px; font-size: 13px; border-radius: 8px; }
+  .btn-danger { background: #e74c3c; color: #fff; }
+  .btn-danger:hover { background: #c0392b; }
+
+  .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+
+  /* ── Manage Mode ── */
+  .teacher-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+    gap: 12px;
+  }
+  .teacher-list-item .info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+  .teacher-list-item .info img {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .teacher-list-item .info .name { font-weight: 600; font-size: 15px; }
+  .teacher-list-item .info .tagline { font-size: 12px; color: var(--ink-light); }
+  .teacher-list-item .actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .export-area {
+    margin-top: 24px;
+    padding: 16px;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .export-area h3 { font-size: 15px; margin-bottom: 10px; }
+  .export-area textarea {
+    width: 100%; height: 120px;
+    font-size: 12px; font-family: monospace;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    resize: vertical;
+  }
+  .export-area .btn-group { margin-top: 10px; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    z-index: 999;
+    animation: toastIn 0.3s ease;
+    pointer-events: none;
+  }
+  @keyframes toastIn {
+    from { opacity:0; transform:translateX(-50%) translateY(10px); }
+    to   { opacity:1; transform:translateX(-50%) translateY(0); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+    .card-top { padding: 18px 14px 12px; }
+    .card-body { padding: 0 14px 16px; }
+    .header h1 { font-size: 19px; }
+    .tabs button { font-size: 14px; padding: 12px 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎨 咔乐艺术 · 教师风采</h1>
+  <p>用专业与热爱，陪伴每一个孩子的艺术成长</p>
+</div>
+
+<div class="tabs">
+  <button class="active" data-tab="view">📱 家长浏览</button>
+  <button data-tab="edit">✏️ 编辑简介</button>
+  <button data-tab="manage">⚙️ 数据管理</button>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════ VIEW MODE ═══════════ -->
+  <div id="tab-view" class="section active">
+    <div class="teacher-grid" id="teacherGrid"></div>
+    <div class="empty-state" id="emptyState">
+      <div class="icon">🖼️</div>
+      <h3>暂无教师简介</h3>
+      <p>切换到「编辑简介」开始添加</p>
+    </div>
+
+    <!-- Share tip -->
+    <div style="text-align:center;margin-top:32px;padding:16px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);font-size:12px;color:var(--ink-light);line-height:1.8;">
+      <span style="font-size:16px;">💡</span> 提示：将本页面链接发给家长，家长在微信中点开即可浏览全部教师简介。<br>
+      也可在微信内置浏览器中「长按截图」分享单个老师卡片。
+    </div>
+  </div>
+
+  <!-- ═══════════ EDIT MODE ═══════════ -->
+  <div id="tab-edit" class="section">
+    <div class="form-header">
+      <h2>📝 编辑教师简介</h2>
+      <select id="editSelect" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--font-cn);">
+        <option value="new">+ 新增教师</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>头像照片 <span class="hint">(建议1:1方形，微信内会自动裁剪为圆形)</span></label>
+      <div class="photo-upload">
+        <img class="photo-preview" id="photoPreview" src="" alt="头像预览">
+        <div>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('photoInput').click()">📷 选择照片</button>
+          <input type="file" id="photoInput" accept="image/*">
+          <button class="btn btn-outline btn-sm" onclick="clearPhoto()" style="margin-left:6px;">✕ 清除</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>姓名 <span style="color:var(--warm);">*</span></label>
+        <input type="text" id="editName" placeholder="例：张老师">
+      </div>
+      <div class="form-group">
+        <label>一句话标签 <span class="hint">(显示在姓名下方)</span></label>
+        <input type="text" id="editTagline" placeholder="例：陪孩子用色彩讲故事的人">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>毕业院校及专业</label>
+        <input type="text" id="editSchool" placeholder="例：安徽师范大学 · 美术学">
+      </div>
+      <div class="form-group">
+        <label>教师资格证科目</label>
+        <input type="text" id="editCert" placeholder="例：高级中学美术">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>从教年限</label>
+        <input type="text" id="editYears" placeholder="例：6年">
+      </div>
+      <div class="form-group">
+        <label>学历</label>
+        <input type="text" id="editDegree" placeholder="例：本科 / 硕士">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>教学理念 <span class="hint">(1-2句话，家长最爱看)</span></label>
+      <textarea id="editPhilosophy" placeholder="例：我从不教孩子'应该怎么画'，而是帮他们发现'原来我可以这样画'。"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>擅长领域 <span class="hint">(用逗号分隔，如：水彩, 素描, 儿童创意美术)</span></label>
+      <input type="text" id="editSpecialties" placeholder="例：水彩, 素描, 儿童创意美术, 国画">
+    </div>
+
+    <div class="form-group">
+      <label>教学成果 <span class="hint">(选最重要的2-3项，每项用分号分隔)</span></label>
+      <textarea id="editAchievements" placeholder="例：辅导学生获市级少儿绘画大赛一等奖；所带班级美术考级通过率98%；个人作品入选安徽省青年美术作品展"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>写给家长的话 <span class="hint">(150字以内，温暖真诚)</span></label>
+      <textarea id="editMessage" placeholder="例：每个孩子心里都住着一个小艺术家。我的课堂不是教技巧，而是创造一个安全、有趣的空间，让孩子敢于表达、乐于尝试。期待和您一起，见证孩子笔下的惊喜。"></textarea>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="saveTeacher()">💾 保存简介</button>
+      <button class="btn btn-outline" onclick="previewCard()">👁️ 预览卡片</button>
+      <button class="btn btn-outline" onclick="resetForm()">🔄 重置表单</button>
+      <button class="btn btn-danger btn-sm" id="deleteBtn" style="display:none;margin-left:auto;" onclick="deleteTeacher()">🗑 删除当前教师</button>
+    </div>
+
+    <div id="livePreview" style="margin-top:28px;"></div>
+  </div>
+
+  <!-- ═══════════ MANAGE MODE ═══════════ -->
+  <div id="tab-manage" class="section">
+    <h2 style="font-size:18px;margin-bottom:16px;">📋 已录入教师列表</h2>
+    <div id="teacherList"></div>
+    <div class="empty-state" id="manageEmpty">
+      <div class="icon">📭</div>
+      <h3>还没有教师数据</h3>
+      <p>切换到「编辑简介」添加第一位老师</p>
+    </div>
+
+    <div class="export-area">
+      <h3>📤 生成家长分享版（核心功能）</h3>
+      <p style="font-size:12px;color:var(--ink-light);margin-bottom:8px;">
+        点击下方按钮，会<strong>自动下载一个独立 HTML 文件</strong> —— 数据直接烧录在文件里，不用服务器。<br>
+        把这个文件通过微信「文件」发送，或上传到任意静态托管（GitHub Pages、阿里云OSS等）生成链接发给家长即可。
+      </p>
+      <button class="btn btn-primary" onclick="generateShareable()" style="margin-bottom:12px;">🚀 一键生成家长分享版</button>
+    </div>
+
+    <div class="export-area">
+      <h3>📦 数据备份 / 迁移</h3>
+      <p style="font-size:12px;color:var(--ink-light);margin-bottom:8px;">复制下方 JSON 数据保存到电脑或发送给同事，可随时恢复。</p>
+      <textarea id="exportData" readonly></textarea>
+      <div class="btn-group">
+        <button class="btn btn-outline btn-sm" onclick="exportData()">📤 导出数据</button>
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('importFile').click()">📥 导入数据</button>
+        <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+        <button class="btn btn-outline btn-sm" onclick="loadDemoData()">🎭 载入演示数据</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast" style="display:none;"></div>
+
+<script>
+  const STORAGE_KEY = 'kale_teachers';
+
+  /* ── Tab switching ── */
+  document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      if (tab === 'view') renderCards();
+      if (tab === 'manage') { renderTeacherList(); exportData(); }
+      if (tab === 'edit') refreshEditSelect();
+    });
+  });
+
+  /* ── Data helpers ── */
+  function getTeachers() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch(e) { return []; }
+  }
+  function setTeachers(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+  /* ── Toast ── */
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.style.display = 'none', 2000);
+  }
+
+  /* ── Render Cards ── */
+  function renderCards() {
+    const teachers = getTeachers();
+    const grid = document.getElementById('teacherGrid');
+    const empty = document.getElementById('emptyState');
+
+    if (teachers.length === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    grid.innerHTML = teachers.map((t, i) => `
+      <div class="teacher-card">
+        <div class="card-top">
+          ${t.photo
+            ? `<img class="card-avatar" src="${t.photo}" alt="${esc(t.name)}">`
+            : `<div class="card-avatar-placeholder">${t.name ? t.name.charAt(0) : '师'}</div>`
+          }
+          <div class="card-title">
+            <h3>${esc(t.name || '未命名')}</h3>
+            ${t.tagline ? `<div class="tagline">${esc(t.tagline)}</div>` : ''}
+            <div class="card-meta">
+              ${t.school ? `<span>🎓 ${esc(t.school)}</span>` : ''}
+              ${t.cert ? `<span>📜 ${esc(t.cert)}</span>` : ''}
+              ${t.years ? `<span>📅 教龄${esc(t.years)}</span>` : ''}
+              ${t.degree ? `<span>📖 ${esc(t.degree)}</span>` : ''}
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          ${t.philosophy ? `
+            <div class="section-title">💡 教学理念</div>
+            <p>${esc(t.philosophy)}</p>
+          ` : ''}
+          ${t.specialties ? `
+            <div class="section-title">🎯 擅长领域</div>
+            <div class="tags">${t.specialties.split(/[,，]/).map(s => s.trim()).filter(Boolean).map(s => `<span class="tag">${esc(s)}</span>`).join('')}</div>
+          ` : ''}
+          ${t.achievements ? `
+            <div class="section-title">🏆 教学成果</div>
+            <p>${esc(t.achievements).replace(/[；;]/g, '<br>')}</p>
+          ` : ''}
+          ${t.message ? `
+            <div class="section-title">✉️ 写给家长</div>
+            <div class="message-box">${esc(t.message)}</div>
+          ` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  /* ── Edit mode ── */
+  let currentEditId = null;
+
+  function refreshEditSelect() {
+    const teachers = getTeachers();
+    const sel = document.getElementById('editSelect');
+    sel.innerHTML = '<option value="new">+ 新增教师</option>' +
+      teachers.map((t, i) => `<option value="${i}">${esc(t.name || '未命名')}</option>`).join('');
+    if (teachers.length === 0) {
+      resetForm();
+      document.getElementById('deleteBtn').style.display = 'none';
+    }
+  }
+
+  document.getElementById('editSelect').addEventListener('change', function() {
+    if (this.value === 'new') {
+      resetForm();
+      currentEditId = null;
+      document.getElementById('deleteBtn').style.display = 'none';
+    } else {
+      loadTeacher(parseInt(this.value));
+      document.getElementById('deleteBtn').style.display = 'inline-flex';
+    }
+  });
+
+  function loadTeacher(index) {
+    const teachers = getTeachers();
+    const t = teachers[index];
+    if (!t) return;
+    currentEditId = index;
+    document.getElementById('editName').value = t.name || '';
+    document.getElementById('editTagline').value = t.tagline || '';
+    document.getElementById('editSchool').value = t.school || '';
+    document.getElementById('editCert').value = t.cert || '';
+    document.getElementById('editYears').value = t.years || '';
+    document.getElementById('editDegree').value = t.degree || '';
+    document.getElementById('editPhilosophy').value = t.philosophy || '';
+    document.getElementById('editSpecialties').value = t.specialties || '';
+    document.getElementById('editAchievements').value = t.achievements || '';
+    document.getElementById('editMessage').value = t.message || '';
+    document.getElementById('photoPreview').src = t.photo || '';
+    document.getElementById('deleteBtn').style.display = 'inline-flex';
+  }
+
+  function resetForm() {
+    currentEditId = null;
+    ['editName','editTagline','editSchool','editCert','editYears','editDegree','editPhilosophy','editSpecialties','editAchievements','editMessage'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('photoPreview').src = '';
+    document.getElementById('editSelect').value = 'new';
+    document.getElementById('deleteBtn').style.display = 'none';
+    document.getElementById('livePreview').innerHTML = '';
+    _photoData = null;
+  }
+
+  /* ── Photo handling ── */
+  let _photoData = null;
+  document.getElementById('photoInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { showToast('照片不能超过2MB'); return; }
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      _photoData = ev.target.result;
+      document.getElementById('photoPreview').src = _photoData;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function clearPhoto() {
+    _photoData = null;
+    document.getElementById('photoPreview').src = '';
+    document.getElementById('photoInput').value = '';
+  }
+
+  /* ── Save ── */
+  function saveTeacher() {
+    const name = document.getElementById('editName').value.trim();
+    if (!name) { showToast('请至少填写教师姓名'); return; }
+
+    const data = {
+      name: name,
+      tagline: document.getElementById('editTagline').value.trim(),
+      school: document.getElementById('editSchool').value.trim(),
+      cert: document.getElementById('editCert').value.trim(),
+      years: document.getElementById('editYears').value.trim(),
+      degree: document.getElementById('editDegree').value.trim(),
+      philosophy: document.getElementById('editPhilosophy').value.trim(),
+      specialties: document.getElementById('editSpecialties').value.trim(),
+      achievements: document.getElementById('editAchievements').value.trim(),
+      message: document.getElementById('editMessage').value.trim(),
+      photo: _photoData || document.getElementById('photoPreview').src || '',
+      updatedAt: new Date().toISOString()
+    };
+
+    const teachers = getTeachers();
+    if (currentEditId !== null) {
+      teachers[currentEditId] = data;
+    } else {
+      teachers.push(data);
+      currentEditId = teachers.length - 1;
+    }
+    setTeachers(teachers);
+    refreshEditSelect();
+    document.getElementById('editSelect').value = currentEditId;
+    document.getElementById('deleteBtn').style.display = 'inline-flex';
+    showToast('✅ 简介已保存！切换到「家长浏览」查看效果');
+  }
+
+  function deleteTeacher() {
+    if (currentEditId === null) return;
+    if (!confirm('确定要删除当前教师的简介吗？此操作不可恢复。')) return;
+    const teachers = getTeachers();
+    teachers.splice(currentEditId, 1);
+    setTeachers(teachers);
+    resetForm();
+    refreshEditSelect();
+    showToast('已删除');
+  }
+
+  /* ── Preview ── */
+  function previewCard() {
+    saveTeacher(); // auto-save first
+    renderCards();
+    const cards = document.getElementById('teacherGrid').innerHTML;
+    const preview = document.getElementById('livePreview');
+    preview.innerHTML = '<h3 style="font-size:15px;color:var(--warm);margin-bottom:12px;">📱 卡片预览（手机端效果）</h3>' +
+      '<div style="max-width:400px;margin:0 auto;">' + cards + '</div>';
+    preview.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  /* ── Manage ── */
+  function renderTeacherList() {
+    const teachers = getTeachers();
+    const list = document.getElementById('teacherList');
+    const empty = document.getElementById('manageEmpty');
+
+    if (teachers.length === 0) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    list.innerHTML = teachers.map((t, i) => `
+      <div class="teacher-list-item">
+        <div class="info">
+          ${t.photo
+            ? `<img src="${t.photo}" alt="">`
+            : `<div class="card-avatar-placeholder" style="width:44px;height:44px;font-size:18px;">${t.name ? t.name.charAt(0) : '师'}</div>`
+          }
+          <div>
+            <div class="name">${esc(t.name || '未命名')}</div>
+            <div class="tagline">${esc(t.tagline || '暂无标签')}</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm" onclick="editFromManage(${i})">✏️ 编辑</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteFromManage(${i})">🗑</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function editFromManage(index) {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-tab="edit"]').classList.add('active');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('tab-edit').classList.add('active');
+    document.getElementById('editSelect').value = index;
+    loadTeacher(index);
+    document.getElementById('deleteBtn').style.display = 'inline-flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function deleteFromManage(index) {
+    if (!confirm('确定要删除该教师的简介吗？')) return;
+    const teachers = getTeachers();
+    teachers.splice(index, 1);
+    setTeachers(teachers);
+    renderTeacherList();
+    refreshEditSelect();
+    exportData();
+    showToast('已删除');
+  }
+
+  /* ── Generate Shareable Version ── */
+  function generateShareable() {
+    const teachers = getTeachers();
+    if (teachers.length === 0) { showToast('请先添加教师数据'); return; }
+
+    // Build a self-contained read-only HTML
+    const dataJSON = JSON.stringify(teachers);
+
+    const shareHTML = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>咔乐艺术 · 教师风采</title>
+<style>
+  :root { --warm: #e07c5a; --warm-light: #fdf0eb; --cream: #fef9f5; --ink: #3d322b; --ink-light: #8b7b6f; --card-bg: #ffffff; --border: #f0e4da; --shadow: 0 2px 16px rgba(61,50,43,0.07); --radius: 14px; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,sans-serif; background: var(--cream); color: var(--ink); line-height: 1.6; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #e07c5a 0%, #d4694a 100%); color: #fff; padding: 28px 20px 22px; text-align: center; box-shadow: 0 2px 12px rgba(224,124,90,0.25); }
+  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+  .header p  { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  .container { max-width: 800px; margin: 0 auto; padding: 20px 16px 60px; }
+  .teacher-grid { display: flex; flex-direction: column; gap: 20px; }
+  .teacher-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .card-top { display: flex; align-items: center; gap: 16px; padding: 24px 20px 16px; }
+  .card-avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid var(--warm-light); flex-shrink: 0; background: var(--warm-light); }
+  .card-avatar-placeholder { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #f0c4b0, #e8a88c); display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; flex-shrink: 0; }
+  .card-title { flex: 1; }
+  .card-title h3 { font-size: 20px; font-weight: 700; color: var(--ink); }
+  .card-title .tagline { font-size: 13px; color: var(--warm); margin-top: 2px; }
+  .card-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .card-meta span { font-size: 12px; background: var(--warm-light); color: var(--warm); padding: 2px 10px; border-radius: 20px; white-space: nowrap; }
+  .card-body { padding: 0 20px 20px; }
+  .card-body .section-title { font-size: 13px; font-weight: 700; color: var(--warm); margin: 12px 0 4px; display: flex; align-items: center; gap: 6px; }
+  .card-body .section-title::before { content: ''; width: 4px; height: 14px; background: var(--warm); border-radius: 2px; }
+  .card-body p, .card-body .tags { font-size: 14px; color: var(--ink); }
+  .card-body .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .card-body .tag { background: #fff; border: 1px solid var(--border); padding: 4px 14px; border-radius: 6px; font-size: 13px; color: var(--ink); }
+  .card-body .message-box { background: var(--warm-light); border-radius: 10px; padding: 14px 16px; margin-top: 12px; font-size: 13px; color: var(--ink-light); line-height: 1.7; position: relative; }
+  .message-box::before { content: '❤'; position: absolute; top: -10px; left: 16px; font-size: 16px; }
+  .footer { text-align: center; padding: 20px; color: #ccc; font-size: 12px; }
+  @media (max-width: 480px) { .card-top { padding: 18px 14px 12px; } .card-body { padding: 0 14px 16px; } .header h1 { font-size: 19px; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🎨 咔乐艺术 · 教师风采</h1>
+  <p>用专业与热爱，陪伴每一个孩子的艺术成长</p>
+</div>
+<div class="container">
+  <div class="teacher-grid" id="grid"></div>
+  <div class="footer">合肥咔乐艺术培训中心</div>
+</div>
+<script>
+  (function(){
+    var data = ${dataJSON};
+    var grid = document.getElementById('grid');
+    function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+    grid.innerHTML = data.map(function(t){
+      return '<div class="teacher-card">' +
+        '<div class="card-top">' +
+          (t.photo ? '<img class="card-avatar" src="'+t.photo+'" alt="">' : '<div class="card-avatar-placeholder">'+(t.name?t.name.charAt(0):'师')+'</div>') +
+          '<div class="card-title">' +
+            '<h3>'+esc(t.name||'')+'</h3>' +
+            (t.tagline ? '<div class="tagline">'+esc(t.tagline)+'</div>' : '') +
+            '<div class="card-meta">' +
+              (t.school?'<span>🎓 '+esc(t.school)+'</span>':'') +
+              (t.cert?'<span>📜 '+esc(t.cert)+'</span>':'') +
+              (t.years?'<span>📅 教龄'+esc(t.years)+'</span>':'') +
+              (t.degree?'<span>📖 '+esc(t.degree)+'</span>':'') +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card-body">' +
+          (t.philosophy ? '<div class="section-title">💡 教学理念</div><p>'+esc(t.philosophy)+'</p>' : '') +
+          (t.specialties ? '<div class="section-title">🎯 擅长领域</div><div class="tags">'+t.specialties.split(/[,，]/).map(function(s){ s=s.trim(); return s?'<span class="tag">'+esc(s)+'</span>':''; }).join('')+'</div>' : '') +
+          (t.achievements ? '<div class="section-title">🏆 教学成果</div><p>'+esc(t.achievements).replace(/[；;]/g,'<br>')+'</p>' : '') +
+          (t.message ? '<div class="section-title">✉️ 写给家长</div><div class="message-box">'+esc(t.message)+'</div>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  })();
+<\\/script>
+</body>
+</html>`;
+
+    const blob = new Blob([shareHTML], { type: 'text/html;charset=UTF-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '咔乐艺术-教师风采-家长版.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('✅ 已下载！把这个文件发给家长即可（无需服务器）');
+  }
+
+  /* ── Export / Import ── */
+  function exportData() {
+    const teachers = getTeachers();
+    const json = JSON.stringify(teachers, null, 2);
+    document.getElementById('exportData').value = json;
+
+    // Also create downloadable file
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '咔乐艺术-教师简介备份_' + new Date().toISOString().slice(0,10) + '.json';
+    // Don't auto-download, just show in textarea
+  }
+
+  function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!Array.isArray(data)) throw new Error('格式错误');
+        const current = getTeachers();
+        if (current.length > 0 && !confirm('当前已有 ' + current.length + ' 位教师数据。\n导入会覆盖现有数据，确定继续？')) return;
+        setTeachers(data);
+        renderTeacherList();
+        refreshEditSelect();
+        exportData();
+        showToast('✅ 成功导入 ' + data.length + ' 位教师数据');
+      } catch(e) {
+        showToast('❌ 文件格式错误，请选择正确的 .json 备份文件');
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+
+  /* ── Demo data ── */
+  function loadDemoData() {
+    if (getTeachers().length > 0 && !confirm('载入演示数据会覆盖现有数据，确定继续？')) return;
+    const demo = [
+      {
+        name: '张梦琪',
+        tagline: '陪孩子用色彩讲故事的人',
+        school: '安徽师范大学 · 美术学',
+        cert: '高级中学美术教师资格证',
+        years: '8年',
+        degree: '本科',
+        philosophy: '我从不教孩子"应该怎么画"，而是帮他们发现"原来我可以这样画"。每个孩子的笔触都是独一无二的语言。',
+        specialties: '水彩, 儿童创意美术, 素描基础, 绘本创作',
+        achievements: '辅导学生获合肥市少儿绘画大赛一等奖12人次；所带班级美术考级通过率100%；个人水彩作品《徽州印象》入选安徽省青年美术作品展',
+        message: '我始终相信，艺术教育不是培养画家，而是培养一个完整的人。在我的课堂上，孩子们学会的不仅是技法，更是观察世界的方式、表达自己的勇气。期待与您一起，守护孩子心中那份对美的本能热爱。',
+        photo: '',
+        updatedAt: '2026-05-15T08:00:00Z'
+      },
+      {
+        name: '李浩然',
+        tagline: '让每个孩子都敢大胆下笔',
+        school: '合肥师范学院 · 美术教育',
+        cert: '小学美术教师资格证',
+        years: '5年',
+        degree: '本科',
+        philosophy: '绘画不是复制，是创造。我致力于保护孩子的想象力，让技巧自然地服务于表达。',
+        specialties: '国画入门, 硬笔书法, 创意手工, 综合材料',
+        achievements: '带领学生参加"全国少儿书画大赛"获金奖3项；个人书法作品获合肥市教师书法展二等奖；开发"趣味水墨"系列课程获家长好评',
+        message: '教育是一场温暖的修行。看到孩子从"我不会画"到自信地举起作品给我看，是我最有成就感的时刻。请放心把孩子交给我，我们一起见证成长。',
+        photo: '',
+        updatedAt: '2026-05-15T08:00:00Z'
+      },
+      {
+        name: '王雨桐',
+        tagline: '用画笔打开孩子的内心世界',
+        school: '南京艺术学院 · 绘画专业',
+        cert: '高级中学美术教师资格证',
+        years: '6年',
+        degree: '硕士',
+        philosophy: '艺术教育的本质是"看见"——看见每个孩子的独特，并帮他们看见自己的光芒。',
+        specialties: '色彩理论, 油画入门, 艺术鉴赏, 考前辅导',
+        achievements: '辅导多名学生考入知名美院附中；个人油画作品《夏》获安徽省油画展优秀奖；连续3年被评为咔乐艺术"最受欢迎教师"',
+        message: '每个孩子都是天生的艺术家，只是有些孩子长大后被"教"忘了。我的任务就是帮他们重新找回那份与生俱来的创造力。欢迎随时和我交流孩子的学习情况。',
+        photo: '',
+        updatedAt: '2026-05-15T08:00:00Z'
+      }
+    ];
+    setTeachers(demo);
+    renderTeacherList();
+    refreshEditSelect();
+    exportData();
+    renderCards();
+    showToast('✅ 已载入 3 位教师演示数据，切换到「家长浏览」查看效果');
+  }
+
+  /* ── Init ── */
+  function init() {
+    const teachers = getTeachers();
+    renderCards();
+    refreshEditSelect();
+    exportData();
+    renderTeacherList();
+
+    // If no data, show a helpful first-time hint
+    if (teachers.length === 0) {
+      showToast('💡 点击「编辑简介」开始添加第一位老师，或点「数据管理」→ 载入演示数据体验');
+    }
+  }
+
+  init();
+</script>
+
+</body>
+</html>

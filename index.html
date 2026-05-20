@@ -1145,6 +1145,87 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 // Reveal hero on load
 document.querySelector('.hero-content').classList.add('visible');
+
+// ── 数据同步：从admin.html同步数据 ──
+function loadWebsiteData() {
+    // 检查URL参数，强制刷新数据
+    const url = new URL(window.location);
+    const t = url.searchParams.get('t');
+
+    // 从localStorage加载admin保存的数据
+    const adminData = localStorage.getItem('kaleart_main_data');
+    if (adminData) {
+        try {
+            const data = JSON.parse(adminData);
+
+            // 更新网站基本信息
+            if (data.site) {
+                document.title = data.site.title + ' — ' + data.site.subtitle;
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) {
+                    metaDesc.content = data.site.description;
+                }
+            }
+
+            // 更新课程数据
+            if (data.courses && data.courses.length > 0) {
+                // 这里可以动态更新课程显示
+                console.log('课程数据已更新:', data.courses);
+            }
+
+            // 更新教师数据
+            if (data.teachers && data.teachers.length > 0) {
+                updateTeacherDisplay(data.teachers);
+            }
+
+            // 更新新闻数据
+            if (data.news && data.news.length > 0) {
+                updateNewsDisplay(data.news);
+            }
+        } catch (e) {
+            console.error('解析数据失败:', e);
+        }
+    }
+}
+
+// 更新教师显示
+function updateTeacherDisplay(teachers) {
+    const teacherGrid = document.getElementById('teacherGrid');
+    if (teacherGrid && teachers.length > 0) {
+        // 如果有教师卡片，更新它们
+        const teacherCards = teacherGrid.querySelectorAll('.teacher-card');
+        teachers.forEach((teacher, index) => {
+            if (teacherCards[index]) {
+                const card = teacherCards[index];
+                card.querySelector('h3').textContent = teacher.name;
+                card.querySelector('p').textContent = teacher.tagline;
+            }
+        });
+    }
+}
+
+// 更新新闻显示
+function updateNewsDisplay(news) {
+    const newsContainer = document.getElementById('newsContainer');
+    if (newsContainer && news.length > 0) {
+        // 清空现有内容
+        newsContainer.innerHTML = news.map(item => `
+            <div class="news-item">
+                <div class="news-date">${item.date}</div>
+                <h3>${item.title}</h3>
+                <p>${item.content}</p>
+            </div>
+        `).join('');
+    }
+}
+
+// 页面加载完成后同步数据
+window.addEventListener('load', loadWebsiteData);
+
+// 监听URL参数变化，自动刷新数据
+window.addEventListener('popstate', () => {
+    loadWebsiteData();
+});
 </script>
 
 </body>

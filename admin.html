@@ -313,6 +313,98 @@
         .notification.show {
             transform: translateX(0);
         }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-family: var(--font-display);
+            font-size: 20px;
+            color: var(--ink);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--ink-light);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .course-item {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .course-actions button {
+            padding: 4px 12px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .edit-stage {
+            background: var(--warm);
+            color: white;
+        }
+
+        .delete-stage {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .add-stage-btn {
+            background: var(--green);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -362,23 +454,159 @@
             <!-- 课程管理 -->
             <div class="admin-section">
                 <h2>📚 课程管理</h2>
-                <button class="add-btn" onclick="addCourse()">+ 添加新课程</button>
+                <button class="add-btn" onclick="showAddCourseModal()">+ 添加新课程</button>
                 <div id="coursesList"></div>
             </div>
 
             <!-- 教师管理 -->
             <div class="admin-section">
                 <h2>👥 教师管理</h2>
-                <button class="add-btn" onclick="showAddTeacherForm()">+ 添加新教师</button>
+                <button class="add-btn" onclick="showAddTeacherModal()">+ 添加新教师</button>
                 <div id="teachersList" class="teacher-grid"></div>
             </div>
 
             <!-- 新闻动态 -->
             <div class="admin-section">
                 <h2>📰 新闻动态</h2>
-                <button class="add-btn" onclick="addNews()">+ 添加新闻</button>
+                <button class="add-btn" onclick="showAddNewsModal()">+ 添加新闻</button>
                 <div id="newsList"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- 添加/编辑课程模态框 -->
+    <div class="modal" id="courseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="courseModalTitle">添加新课程</h3>
+                <button class="close-modal" onclick="closeCourseModal()">&times;</button>
+            </div>
+            <form id="courseForm">
+                <div class="form-group">
+                    <label>课程名称</label>
+                    <input type="text" id="courseName" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>授课老师</label>
+                        <input type="text" id="courseTeacher" required>
+                    </div>
+                    <div class="form-group">
+                        <label>年龄段</label>
+                        <input type="text" id="courseAge" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>课程简介</label>
+                    <input type="text" id="courseDesc" required>
+                </div>
+                <div class="form-group">
+                    <label>课程详情</label>
+                    <textarea id="courseDetail" rows="4"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>价格</label>
+                        <input type="text" id="coursePrice">
+                    </div>
+                    <div class="form-group">
+                        <label>课时</label>
+                        <input type="text" id="courseDuration">
+                    </div>
+                    <div class="form-group">
+                        <label>班级人数</label>
+                        <input type="text" id="courseClassSize">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>课程阶段</label>
+                    <div id="courseStages"></div>
+                    <button type="button" class="add-btn add-stage-btn" onclick="addCourseStage()">+ 添加阶段</button>
+                </div>
+                <button type="submit" class="save-btn">保存课程</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 添加/编辑教师模态框 -->
+    <div class="modal" id="teacherModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="teacherModalTitle">添加新教师</h3>
+                <button class="close-modal" onclick="closeTeacherModal()">&times;</button>
+            </div>
+            <form id="teacherForm">
+                <div class="form-group">
+                    <label>教师姓名</label>
+                    <input type="text" id="teacherName" required>
+                </div>
+                <div class="form-group">
+                    <label>一句话标签</label>
+                    <input type="text" id="teacherTagline" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>毕业院校</label>
+                        <input type="text" id="teacherSchool" required>
+                    </div>
+                    <div class="form-group">
+                        <label>学历</label>
+                        <input type="text" id="teacherDegree" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>教师资格证</label>
+                        <input type="text" id="teacherCert" required>
+                    </div>
+                    <div class="form-group">
+                        <label>从教年限</label>
+                        <input type="text" id="teacherYears" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>教学理念</label>
+                    <textarea id="teacherPhilosophy" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>擅长领域</label>
+                    <input type="text" id="teacherSpecialties" placeholder="用逗号分隔">
+                </div>
+                <div class="form-group">
+                    <label>教学成果</label>
+                    <textarea id="teacherAchievements" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>写给家长的话</label>
+                    <textarea id="teacherMessage" rows="4"></textarea>
+                </div>
+                <button type="submit" class="save-btn">保存教师</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 添加/编辑新闻模态框 -->
+    <div class="modal" id="newsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="newsModalTitle">添加新闻</h3>
+                <button class="close-modal" onclick="closeNewsModal()">&times;</button>
+            </div>
+            <form id="newsForm">
+                <div class="form-group">
+                    <label>新闻标题</label>
+                    <input type="text" id="newsTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>发布日期</label>
+                    <input type="date" id="newsDate" required>
+                </div>
+                <div class="form-group">
+                    <label>新闻内容</label>
+                    <textarea id="newsContent" rows="6" required></textarea>
+                </div>
+                <button type="submit" class="save-btn">保存新闻</button>
+            </form>
         </div>
     </div>
 
@@ -389,7 +617,7 @@
         // 管理员密码
         const ADMIN_PASSWORD = '123456';
 
-        // 数据存储
+        // 从index.html加载的数据
         let websiteData = {
             site: {
                 title: '合肥咔乐艺术培训中心',
@@ -474,29 +702,11 @@
             ]
         };
 
-        // 从localStorage加载数据
-        function loadData() {
-            const saved = localStorage.getItem('kaleart_admin_data');
-            if (saved) {
-                websiteData = JSON.parse(saved);
-            }
-        }
-
-        // 保存数据
-        function saveData() {
-            localStorage.setItem('kaleart_admin_data', JSON.stringify(websiteData));
-            showNotification('保存成功！');
-        }
-
-        // 显示通知
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
+        // 当前编辑的数据
+        let editingCourse = null;
+        let editingTeacher = null;
+        let editingNews = null;
+        let courseStagesList = [];
 
         // 登录
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -505,7 +715,6 @@
             if (password === ADMIN_PASSWORD) {
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('adminContainer').style.display = 'block';
-                loadData();
                 renderAll();
             } else {
                 alert('密码错误！');
@@ -569,6 +778,47 @@
             element.onclick = () => editText(element, field);
         }
 
+        // 保存数据并更新主网站
+        function saveData() {
+            // 更新localStorage
+            localStorage.setItem('kaleart_admin_data', JSON.stringify(websiteData));
+
+            // 更新主网站
+            updateMainSite();
+
+            // 显示通知
+            showNotification('保存成功！');
+        }
+
+        // 更新主网站
+        function updateMainSite() {
+            // 这里更新主网站的数据结构
+            const mainSiteData = {
+                site: websiteData.site,
+                courses: websiteData.courses,
+                teachers: websiteData.teachers,
+                news: websiteData.news
+            };
+
+            // 保存到localStorage供主网站使用
+            localStorage.setItem('kaleart_main_data', JSON.stringify(mainSiteData));
+
+            // 更新网站URL参数以触发重新加载
+            const url = new URL(window.location);
+            url.searchParams.set('t', Date.now());
+            window.history.replaceState({}, '', url);
+        }
+
+        // 显示通知
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
         // 渲染所有内容
         function renderAll() {
             renderCourses();
@@ -626,112 +876,107 @@
             `).join('');
         }
 
-        // 添加课程
-        function addCourse() {
-            const name = prompt('课程名称：');
-            if (!name) return;
-
-            const teacher = prompt('授课老师：');
-            if (!teacher) return;
-
-            const age = prompt('年龄段：');
-            if (!age) return;
-
-            const desc = prompt('课程简介：');
-            if (!desc) return;
-
-            const newCourse = {
-                id: Date.now(),
-                name,
-                teacher,
-                age,
-                desc,
-                stages: [],
-                detail: '',
-                price: '',
-                duration: '',
-                classSize: ''
-            };
-
-            websiteData.courses.push(newCourse);
-            saveData();
-            renderCourses();
+        // 课程模态框
+        function showAddCourseModal() {
+            editingCourse = null;
+            courseStagesList = [];
+            document.getElementById('courseModalTitle').textContent = '添加新课程';
+            document.getElementById('courseForm').reset();
+            renderCourseStages();
+            document.getElementById('courseModal').style.display = 'flex';
         }
 
-        // 添加教师
-        function showAddTeacherForm() {
-            const name = prompt('教师姓名：');
-            if (!name) return;
-
-            const tagline = prompt('一句话标签：');
-            if (!tagline) return;
-
-            const school = prompt('毕业院校：');
-            if (!school) return;
-
-            const cert = prompt('教师资格证：');
-            if (!cert) return;
-
-            const years = prompt('从教年限：');
-            if (!years) return;
-
-            const philosophy = prompt('教学理念：');
-            if (!philosophy) return;
-
-            const newTeacher = {
-                id: Date.now(),
-                name,
-                tagline,
-                school,
-                cert,
-                years,
-                degree: '本科',
-                philosophy,
-                specialties: '',
-                achievements: '',
-                message: ''
-            };
-
-            websiteData.teachers.push(newTeacher);
-            saveData();
-            renderTeachers();
-        }
-
-        // 添加新闻
-        function addNews() {
-            const title = prompt('新闻标题：');
-            if (!title) return;
-
-            const date = prompt('发布日期（YYYY-MM-DD）：');
-            if (!date) return;
-
-            const content = prompt('新闻内容：');
-            if (!content) return;
-
-            const newNews = {
-                id: Date.now(),
-                title,
-                date,
-                content
-            };
-
-            websiteData.news.push(newNews);
-            saveData();
-            renderNews();
-        }
-
-        // 编辑课程（简化版）
         function editCourse(id) {
             const course = websiteData.courses.find(c => c.id === id);
             if (!course) return;
 
-            const newName = prompt('课程名称：', course.name);
-            if (newName !== null) {
-                course.name = newName;
-                saveData();
-                renderCourses();
+            editingCourse = course;
+            courseStagesList = [...course.stages];
+
+            document.getElementById('courseModalTitle').textContent = '编辑课程';
+            document.getElementById('courseName').value = course.name;
+            document.getElementById('courseTeacher').value = course.teacher;
+            document.getElementById('courseAge').value = course.age;
+            document.getElementById('courseDesc').value = course.desc;
+            document.getElementById('courseDetail').value = course.detail || '';
+            document.getElementById('coursePrice').value = course.price || '';
+            document.getElementById('courseDuration').value = course.duration || '';
+            document.getElementById('courseClassSize').value = course.classSize || '';
+
+            renderCourseStages();
+            document.getElementById('courseModal').style.display = 'flex';
+        }
+
+        function closeCourseModal() {
+            document.getElementById('courseModal').style.display = 'none';
+        }
+
+        // 添加课程阶段
+        function addCourseStage() {
+            const stage = prompt('阶段名称：');
+            if (stage) {
+                courseStagesList.push(stage);
+                renderCourseStages();
             }
         }
+
+        function editCourseStage(index) {
+            const stage = prompt('阶段名称：', courseStagesList[index]);
+            if (stage !== null) {
+                courseStagesList[index] = stage;
+                renderCourseStages();
+            }
+        }
+
+        function deleteCourseStage(index) {
+            courseStagesList.splice(index, 1);
+            renderCourseStages();
+        }
+
+        function renderCourseStages() {
+            const container = document.getElementById('courseStages');
+            container.innerHTML = courseStagesList.map((stage, index) => `
+                <div class="course-item">
+                    <input type="text" value="${stage}" onchange="updateCourseStage(${index}, this.value)">
+                    <div class="course-actions">
+                        <button type="button" class="action-btn edit-stage" onclick="editCourseStage(${index})">编辑</button>
+                        <button type="button" class="action-btn delete-stage" onclick="deleteCourseStage(${index})">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateCourseStage(index, value) {
+            courseStagesList[index] = value;
+        }
+
+        // 保存课程
+        document.getElementById('courseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const courseData = {
+                id: editingCourse ? editingCourse.id : Date.now(),
+                name: document.getElementById('courseName').value,
+                teacher: document.getElementById('courseTeacher').value,
+                age: document.getElementById('courseAge').value,
+                desc: document.getElementById('courseDesc').value,
+                detail: document.getElementById('courseDetail').value,
+                price: document.getElementById('coursePrice').value,
+                duration: document.getElementById('courseDuration').value,
+                classSize: document.getElementById('courseClassSize').value,
+                stages: courseStagesList
+            };
+
+            if (editingCourse) {
+                Object.assign(editingCourse, courseData);
+            } else {
+                websiteData.courses.push(courseData);
+            }
+
+            saveData();
+            renderCourses();
+            closeCourseModal();
+        });
 
         // 删除课程
         function deleteCourse(id) {
@@ -742,18 +987,67 @@
             }
         }
 
-        // 编辑教师（简化版）
+        // 教师模态框
+        function showAddTeacherModal() {
+            editingTeacher = null;
+            document.getElementById('teacherModalTitle').textContent = '添加新教师';
+            document.getElementById('teacherForm').reset();
+            document.getElementById('teacherModal').style.display = 'flex';
+        }
+
         function editTeacher(id) {
             const teacher = websiteData.teachers.find(t => t.id === id);
             if (!teacher) return;
 
-            const newName = prompt('教师姓名：', teacher.name);
-            if (newName !== null) {
-                teacher.name = newName;
-                saveData();
-                renderTeachers();
-            }
+            editingTeacher = teacher;
+
+            document.getElementById('teacherModalTitle').textContent = '编辑教师';
+            document.getElementById('teacherName').value = teacher.name;
+            document.getElementById('teacherTagline').value = teacher.tagline;
+            document.getElementById('teacherSchool').value = teacher.school;
+            document.getElementById('teacherDegree').value = teacher.degree;
+            document.getElementById('teacherCert').value = teacher.cert;
+            document.getElementById('teacherYears').value = teacher.years;
+            document.getElementById('teacherPhilosophy').value = teacher.philosophy;
+            document.getElementById('teacherSpecialties').value = teacher.specialties;
+            document.getElementById('teacherAchievements').value = teacher.achievements;
+            document.getElementById('teacherMessage').value = teacher.message;
+
+            document.getElementById('teacherModal').style.display = 'flex';
         }
+
+        function closeTeacherModal() {
+            document.getElementById('teacherModal').style.display = 'none';
+        }
+
+        // 保存教师
+        document.getElementById('teacherForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const teacherData = {
+                id: editingTeacher ? editingTeacher.id : Date.now(),
+                name: document.getElementById('teacherName').value,
+                tagline: document.getElementById('teacherTagline').value,
+                school: document.getElementById('teacherSchool').value,
+                degree: document.getElementById('teacherDegree').value,
+                cert: document.getElementById('teacherCert').value,
+                years: document.getElementById('teacherYears').value,
+                philosophy: document.getElementById('teacherPhilosophy').value,
+                specialties: document.getElementById('teacherSpecialties').value,
+                achievements: document.getElementById('teacherAchievements').value,
+                message: document.getElementById('teacherMessage').value
+            };
+
+            if (editingTeacher) {
+                Object.assign(editingTeacher, teacherData);
+            } else {
+                websiteData.teachers.push(teacherData);
+            }
+
+            saveData();
+            renderTeachers();
+            closeTeacherModal();
+        });
 
         // 删除教师
         function deleteTeacher(id) {
@@ -764,18 +1058,53 @@
             }
         }
 
-        // 编辑新闻
+        // 新闻模态框
+        function showAddNewsModal() {
+            editingNews = null;
+            document.getElementById('newsModalTitle').textContent = '添加新闻';
+            document.getElementById('newsForm').reset();
+            document.getElementById('newsModal').style.display = 'flex';
+        }
+
         function editNews(id) {
             const news = websiteData.news.find(n => n.id === id);
             if (!news) return;
 
-            const newTitle = prompt('新闻标题：', news.title);
-            if (newTitle !== null) {
-                news.title = newTitle;
-                saveData();
-                renderNews();
-            }
+            editingNews = news;
+
+            document.getElementById('newsModalTitle').textContent = '编辑新闻';
+            document.getElementById('newsTitle').value = news.title;
+            document.getElementById('newsDate').value = news.date;
+            document.getElementById('newsContent').value = news.content;
+
+            document.getElementById('newsModal').style.display = 'flex';
         }
+
+        function closeNewsModal() {
+            document.getElementById('newsModal').style.display = 'none';
+        }
+
+        // 保存新闻
+        document.getElementById('newsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const newsData = {
+                id: editingNews ? editingNews.id : Date.now(),
+                title: document.getElementById('newsTitle').value,
+                date: document.getElementById('newsDate').value,
+                content: document.getElementById('newsContent').value
+            };
+
+            if (editingNews) {
+                Object.assign(editingNews, newsData);
+            } else {
+                websiteData.news.push(newsData);
+            }
+
+            saveData();
+            renderNews();
+            closeNewsModal();
+        });
 
         // 删除新闻
         function deleteNews(id) {
@@ -783,6 +1112,13 @@
                 websiteData.news = websiteData.news.filter(n => n.id !== id);
                 saveData();
                 renderNews();
+            }
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
             }
         }
     </script>

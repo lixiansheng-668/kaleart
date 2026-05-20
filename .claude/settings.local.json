@@ -8,7 +8,8 @@
       "PowerShell(Get-CimInstance -ClassName Win32_BaseBoard)",
       "PowerShell(npx skills add pptx -y -g)",
       "Bash(ls -la ~/.claude/sessions/)",
-      "Read(//c/Users/Administrator/.claude/sessions/**)"
+      "Read(//c/Users/Administrator/.claude/sessions/**)",
+      "Bash(curl -I https://lixiansheng-668.github.io/kaleart/)"
     ]
   }
 }

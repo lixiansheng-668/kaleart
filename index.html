@@ -1148,84 +1148,225 @@ document.querySelector('.hero-content').classList.add('visible');
 
 // ── 数据同步：从admin.html同步数据 ──
 function loadWebsiteData() {
-    // 检查URL参数，强制刷新数据
-    const url = new URL(window.location);
-    const t = url.searchParams.get('t');
-
-    // 从localStorage加载admin保存的数据
     const adminData = localStorage.getItem('kaleart_main_data');
-    if (adminData) {
-        try {
-            const data = JSON.parse(adminData);
+    if (!adminData) return;
+    try {
+        const data = JSON.parse(adminData);
+        if (data.hero) updateHero(data.hero);
+        if (data.about) updateAbout(data.about);
+        if (data.courses && data.courses.length > 0) updateCourses(data.courses);
+        if (data.coursesSection) updateSectionMeta('courses', data.coursesSection);
+        if (data.teachers && data.teachers.length > 0) updateTeachers(data.teachers);
+        if (data.teachersSection) updateSectionMeta('teachers', data.teachersSection);
+        if (data.achievements) updateAchievements(data.achievements);
+        if (data.campus && data.campus.length > 0) updateCampus(data.campus);
+        if (data.campusSection) updateSectionMeta('campus', data.campusSection);
+        if (data.admissions && data.admissions.length > 0) updateAdmissions(data.admissions);
+        if (data.admissionsSection) updateSectionMeta('admissions', data.admissionsSection);
+        if (data.testimonials && data.testimonials.length > 0) updateTestimonials(data.testimonials);
+        if (data.faq && data.faq.length > 0) updateFaq(data.faq);
+        if (data.contact) updateContact(data.contact);
+        if (data.news && data.news.length > 0) updateNews(data.news);
+    } catch(e) { console.error('数据同步失败:', e); }
+}
 
-            // 更新网站基本信息
-            if (data.site) {
-                document.title = data.site.title + ' — ' + data.site.subtitle;
-                const metaDesc = document.querySelector('meta[name="description"]');
-                if (metaDesc) {
-                    metaDesc.content = data.site.description;
-                }
-            }
+function updateSectionMeta(id, sec){
+    const parent = document.getElementById(id);
+    if(!parent) return;
+    const p = parent.querySelector('.section-header p');
+    if(p && sec.subtitle) p.textContent = sec.subtitle;
+}
 
-            // 更新课程数据
-            if (data.courses && data.courses.length > 0) {
-                // 这里可以动态更新课程显示
-                console.log('课程数据已更新:', data.courses);
-            }
-
-            // 更新教师数据
-            if (data.teachers && data.teachers.length > 0) {
-                updateTeacherDisplay(data.teachers);
-            }
-
-            // 更新新闻数据
-            if (data.news && data.news.length > 0) {
-                updateNewsDisplay(data.news);
-            }
-        } catch (e) {
-            console.error('解析数据失败:', e);
+function updateHero(hero){
+    const badge = document.querySelector('.hero-badge');
+    if(badge && hero.badge) badge.textContent = hero.badge;
+    const h1 = document.querySelector('.hero h1');
+    if(h1 && hero.title1 && hero.highlight && hero.title2){
+        h1.innerHTML = hero.title1 + '<span class="highlight">' + hero.highlight + '</span><br>' + hero.title2;
+    }
+    const subtitle = document.querySelector('.hero-subtitle');
+    if(subtitle && hero.subtitle) subtitle.innerHTML = hero.subtitle.replace(/\n/g,'<br>');
+    if(hero.stats && hero.stats.length>0){
+        const statsContainer = document.querySelector('.hero-stats');
+        if(statsContainer){
+            statsContainer.innerHTML = hero.stats.map(s=>'<div class="hero-stat"><div class="num">'+s.num+'</div><div class="label">'+s.label+'</div></div>').join('');
         }
     }
 }
 
-// 更新教师显示
-function updateTeacherDisplay(teachers) {
-    const teacherGrid = document.getElementById('teacherGrid');
-    if (teacherGrid && teachers.length > 0) {
-        // 如果有教师卡片，更新它们
-        const teacherCards = teacherGrid.querySelectorAll('.teacher-card');
-        teachers.forEach((teacher, index) => {
-            if (teacherCards[index]) {
-                const card = teacherCards[index];
-                card.querySelector('h3').textContent = teacher.name;
-                card.querySelector('p').textContent = teacher.tagline;
-            }
-        });
+function updateAbout(about){
+    const grid = document.querySelector('.about-grid');
+    if(!grid) return;
+    const h3 = grid.querySelector('.about-text h3');
+    if(h3 && about.title) h3.textContent = about.title;
+    const ps = grid.querySelectorAll('.about-text > p');
+    if(ps[0] && about.p1) ps[0].innerHTML = about.p1;
+    if(ps[1] && about.p2) ps[1].innerHTML = about.p2;
+    if(about.features && about.features.length>0){
+        const featContainer = grid.querySelector('.about-features');
+        if(featContainer){
+            featContainer.innerHTML = about.features.map(f=>
+                '<div class="about-feature"><div class="about-feature-icon">'+f.icon+'</div><div><h4>'+f.title+'</h4><p>'+f.desc+'</p></div></div>'
+            ).join('');
+        }
     }
 }
 
-// 更新新闻显示
-function updateNewsDisplay(news) {
-    const newsContainer = document.getElementById('newsContainer');
-    if (newsContainer && news.length > 0) {
-        // 清空现有内容
-        newsContainer.innerHTML = news.map(item => `
-            <div class="news-item">
-                <div class="news-date">${item.date}</div>
-                <h3>${item.title}</h3>
-                <p>${item.content}</p>
+function updateCourses(courses){
+    const grid = document.querySelector('.course-grid');
+    if(!grid) return;
+    grid.innerHTML = courses.map(c => `
+        <div class="course-card reveal">
+          <div class="course-summary" onclick="this.parentElement.classList.toggle('open')">
+            <div class="course-summary-body">
+              <div class="course-icon ${c.cls||'watercolor'}">${c.icon||'🎨'}</div>
+              <h3>${c.name}</h3>
+              <div class="age">${c.age}</div>
+              <p>${c.desc}</p>
             </div>
-        `).join('');
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="course-detail">
+            <div class="course-detail-inner">
+              <h4>学习阶段</h4>
+              <div class="course-stages">${(c.stages||[]).map(s=>'<div class="course-stage"><div class="step">'+s.step+'</div><div class="name">'+s.name+'</div></div>').join('')}</div>
+              <h4>课程详情</h4>
+              <p>${c.detail||''}</p>
+              <div class="course-meta">
+                <div class="course-meta-item">授课：<span class="em">${c.teacher||''}</span></div>
+                <div class="course-meta-item">时长：<span class="em">${c.duration||''}</span></div>
+                <div class="course-meta-item">班额：<span class="em">${c.classSize||''}</span></div>
+                <div class="course-meta-item">费用：<span class="em">${c.price||''}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>`).join('');
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+function updateTeachers(teachers){
+    const grid = document.querySelector('.teacher-grid');
+    if(!grid) return;
+    grid.innerHTML = teachers.map((t,i) => `
+        <div class="teacher-card reveal">
+          <div class="teacher-avatar ${t.avatarClass||'t'+(i+1)}"${t.avatarBg?' style="background:'+t.avatarBg+'"':''}>${t.avatar||'👩‍🎨'}</div>
+          <div class="teacher-info">
+            <h3>${t.name}</h3>
+            <div class="role">${t.role||''}</div>
+            <div class="meta">${t.school||''} | 从教 ${t.years||''}</div>
+            <div class="meta">${t.cert||''}</div>
+            <div class="teacher-tags">${(t.specialties||'').split(',').filter(Boolean).map(s=>'<span class="teacher-tag">'+s.trim()+'</span>').join('')}</div>
+            <div class="teacher-quote">${t.quote||''}</div>
+          </div>
+        </div>`).join('');
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+function updateAchievements(ach){
+    const section = document.getElementById('achievements');
+    if(!section) return;
+    if(ach.stats && ach.stats.length>0){
+        const grid = section.querySelector('.achieve-grid');
+        if(grid) grid.innerHTML = ach.stats.map(s=>'<div class="achieve-card reveal"><div class="achieve-num">'+s.num+'</div><div class="achieve-label">'+s.label+'</div></div>').join('');
+    }
+    if(ach.highlights && ach.highlights.length>0){
+        const hl = section.querySelector('.achieve-highlights');
+        if(hl) hl.innerHTML = ach.highlights.map(h=>'<div class="achieve-highlight reveal"><div class="trophy">'+h.icon+'</div><div class="info"><h4>'+h.title+'</h4><p>'+h.desc+'</p></div></div>').join('');
+    }
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+function updateCampus(campus){
+    const grid = document.querySelector('.campus-grid');
+    if(!grid) return;
+    grid.innerHTML = campus.map(c=>'<div class="campus-card reveal"><div>'+c.icon+'</div><div class="label">'+c.label+'</div></div>').join('');
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+function updateAdmissions(admissions){
+    const grid = document.querySelector('.admit-grid');
+    if(!grid) return;
+    grid.innerHTML = admissions.map(a=>`
+        <div class="admit-card reveal${a.featured?' featured':''}">
+            <h3>${a.title}</h3>
+            <div class="price">${a.price}<span> ${a.priceUnit||''}</span></div>
+            <ul class="admit-features">${(a.features||[]).map(f=>'<li>'+f+'</li>').join('')}</ul>
+        </div>`).join('');
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+function updateTestimonials(testimonials){
+    const grid = document.querySelector('.testimonial-grid');
+    if(!grid) return;
+    grid.innerHTML = testimonials.map(t=>`
+        <div class="testimonial-card reveal">
+            <div class="stars">${'★'.repeat(t.stars||5)}</div>
+            <p class="text">${t.text}</p>
+            <div class="author">${t.author}</div>
+        </div>`).join('');
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+function updateFaq(faq){
+    const list = document.querySelector('.faq-list');
+    if(!list) return;
+    list.innerHTML = faq.map(f=>`
+        <div class="faq-item">
+            <button class="faq-question">${f.q}<span class="arrow">▼</span></button>
+            <div class="faq-answer">${f.a}</div>
+        </div>`).join('');
+    document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const item = btn.parentElement;
+            const wasOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+            if (!wasOpen) item.classList.add('open');
+        });
+    });
+}
+
+function updateContact(contact){
+    const section = document.getElementById('contact');
+    if(!section) return;
+    if(contact.title){
+        const p = section.querySelector('.section-header p');
+        if(p) p.textContent = contact.title;
+    }
+    if(contact.items && contact.items.length>0){
+        const info = section.querySelector('.contact-info');
+        if(info){
+            const h3 = info.querySelector('h3');
+            const items = info.querySelectorAll('.contact-item');
+            contact.items.forEach((item, i) => {
+                if(items[i]){
+                    items[i].querySelector('.icon').textContent = item.icon;
+                    items[i].querySelector('h4').textContent = item.title;
+                    items[i].querySelector('p').textContent = item.content;
+                }
+            });
+        }
     }
 }
 
-// 页面加载完成后同步数据
-window.addEventListener('load', loadWebsiteData);
+function updateNews(news){
+    // News没有独立板块在主站，更新到页脚上方或动态创建
+    const footer = document.querySelector('footer');
+    if(!footer || !news.length) return;
+    let newsSection = document.getElementById('newsSection');
+    if(!newsSection){
+        newsSection = document.createElement('section');
+        newsSection.id = 'newsSection';
+        newsSection.className = 'testimonials reveal';
+        newsSection.innerHTML = '<div class="section-header"><div class="section-tag">NEWS</div><h2>新闻动态</h2><div class="section-line"></div></div><div class="testimonial-grid" id="newsGrid"></div>';
+        footer.parentNode.insertBefore(newsSection, footer);
+    }
+    const grid = document.getElementById('newsGrid');
+    if(grid) grid.innerHTML = news.map(n=>'<div class="testimonial-card reveal"><h4 style="margin-bottom:8px">'+n.title+'</h4><div class="meta" style="font-size:0.8rem;color:var(--ink-light);margin-bottom:8px">'+n.date+'</div><p>'+n.content+'</p></div>').join('');
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
 
-// 监听URL参数变化，自动刷新数据
-window.addEventListener('popstate', () => {
-    loadWebsiteData();
-});
+window.addEventListener('load', loadWebsiteData);
+window.addEventListener('popstate', loadWebsiteData);
 </script>
 
 </body>

@@ -7,1120 +7,934 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --warm: #d4846a;
-            --warm-deep: #c06a4e;
-            --warm-light: #fdf0eb;
-            --cream: #fef9f3;
-            --ink: #3d322b;
-            --ink-light: #7a6e64;
-            --green: #5b8c5a;
-            --green-light: #e8f0e5;
-            --gold: #d4a853;
-            --gold-light: #faf5e8;
-            --white: #ffffff;
-            --border: #ede4db;
-            --shadow-sm: 0 2px 12px rgba(61,50,43,0.06);
+            --warm: #d4846a; --warm-deep: #c06a4e; --warm-light: #fdf0eb;
+            --cream: #fef9f3; --ink: #3d322b; --ink-light: #7a6e64;
+            --green: #5b8c5a; --gold: #d4a853; --white: #fff;
+            --border: #ede4db; --radius: 16px; --radius-sm: 10px;
             --shadow: 0 4px 24px rgba(61,50,43,0.09);
             --shadow-lg: 0 8px 40px rgba(61,50,43,0.12);
-            --radius: 16px;
-            --radius-sm: 10px;
             --font-display: "Noto Serif SC", serif;
             --font-body: "Noto Sans SC", sans-serif;
-            --max-width: 1200px;
         }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:var(--font-body);background:var(--cream);color:var(--ink);line-height:1.8;}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: var(--font-body);
-            background: var(--cream);
-            color: var(--ink);
-            line-height: 1.8;
-        }
+        .login-container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:linear-gradient(135deg,#fef9f3 0%,#fdf0eb 100%);}
+        .login-box{background:var(--white);padding:40px;border-radius:var(--radius);box-shadow:var(--shadow-lg);width:100%;max-width:400px;}
+        .login-box h1{font-family:var(--font-display);font-size:28px;text-align:center;margin-bottom:30px;color:var(--warm);}
+        .form-group{margin-bottom:16px;}
+        .form-group label{display:block;margin-bottom:6px;font-weight:500;font-size:14px;}
+        .form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:8px;font-size:15px;font-family:inherit;transition:border-color 0.3s;}
+        .form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--warm);}
+        .form-group textarea{min-height:80px;resize:vertical;}
+        .form-row{display:flex;gap:14px;}
+        .form-row .form-group{flex:1;}
+        .login-btn{width:100%;padding:12px;background:var(--warm);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;transition:background 0.3s;}
+        .login-btn:hover{background:var(--warm-deep);}
 
-        /* 登录界面 */
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #fef9f3 0%, #fdf0eb 100%);
-        }
+        .admin-container{display:none;min-height:100vh;}
+        .admin-header{background:var(--warm);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+        .admin-nav{max-width:1300px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+        .admin-nav h1{font-family:var(--font-display);font-size:22px;}
+        .admin-nav .nav-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+        .admin-nav .nav-tab{padding:6px 14px;border-radius:20px;border:none;cursor:pointer;font-size:13px;background:rgba(255,255,255,0.2);color:#fff;transition:all 0.2s;white-space:nowrap;}
+        .admin-nav .nav-tab.active,.admin-nav .nav-tab:hover{background:#fff;color:var(--warm);}
+        .logout-btn{padding:8px 18px;background:#fff;color:var(--warm);border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;}
 
-        .login-box {
-            background: var(--white);
-            padding: 40px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            width: 100%;
-            max-width: 400px;
-        }
+        .admin-content{max-width:1300px;margin:0 auto;padding:30px 20px;}
+        .admin-section{display:none;background:#fff;padding:28px;border-radius:var(--radius);margin-bottom:24px;box-shadow:var(--shadow);}
+        .admin-section.active{display:block;}
+        .admin-section h2{font-family:var(--font-display);font-size:22px;margin-bottom:18px;color:var(--ink);}
+        .admin-section h3{font-size:16px;color:var(--ink);margin:16px 0 10px;padding-top:16px;border-top:1px solid var(--border);}
+        .admin-section h3:first-of-type{border-top:none;margin-top:0;padding-top:0;}
+        .add-btn{padding:10px 20px;background:var(--green);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:16px;display:inline-block;}
+        .add-btn:hover{background:#4a7c4a;}
 
-        .login-box h1 {
-            font-family: var(--font-display);
-            font-size: 28px;
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--warm);
-        }
+        .card-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+        .card-item{background:var(--cream);border-radius:var(--radius-sm);padding:18px;position:relative;border:1px solid var(--border);}
+        .card-actions{position:absolute;top:10px;right:10px;display:flex;gap:4px;}
+        .action-btn{padding:3px 8px;font-size:11px;border:none;border-radius:4px;cursor:pointer;color:#fff;}
+        .btn-edit{background:var(--warm);}
+        .btn-del{background:#e74c3c;}
+        .card-item h4{font-size:15px;margin-bottom:4px;}
+        .card-item .meta{font-size:12px;color:var(--ink-light);}
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+        .stat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px;}
+        .stat-item{background:var(--cream);padding:14px;border-radius:var(--radius-sm);text-align:center;}
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--ink);
-        }
+        .item-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+        .item-row:last-child{border-bottom:none;}
+        .item-row .content{flex:1;}
+        .item-row .item-actions{display:flex;gap:4px;flex-shrink:0;}
 
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
+        .notification{position:fixed;top:20px;right:20px;padding:14px 22px;background:var(--green);color:#fff;border-radius:8px;box-shadow:var(--shadow-lg);z-index:9999;transform:translateX(400px);transition:transform 0.3s;}
+        .notification.show{transform:translateX(0);}
+        .notification.error{background:#e74c3c;}
 
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--warm);
-        }
+        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000;align-items:center;justify-content:center;}
+        .modal-content{background:#fff;padding:28px;border-radius:var(--radius);max-width:650px;width:92%;max-height:82vh;overflow-y:auto;}
+        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+        .modal-header h3{font-family:var(--font-display);font-size:20px;color:var(--ink);}
+        .close-modal{background:none;border:none;font-size:26px;cursor:pointer;color:var(--ink-light);}
+        .btn-row{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+        .btn-save{padding:10px 24px;background:var(--green);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;}
+        .btn-cancel{padding:10px 24px;background:#999;color:#fff;border:none;border-radius:8px;cursor:pointer;}
+        .btn-save:hover{background:#4a7c4a;}
 
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--warm);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .login-btn:hover {
-            background: var(--warm-deep);
-        }
-
-        /* 管理界面 */
-        .admin-container {
-            display: none;
-            min-height: 100vh;
-        }
-
-        .admin-header {
-            background: var(--warm);
-            color: white;
-            padding: 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow);
-        }
-
-        .admin-nav {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .admin-nav h1 {
-            font-family: var(--font-display);
-            font-size: 24px;
-        }
-
-        .logout-btn {
-            padding: 8px 20px;
-            background: white;
-            color: var(--warm);
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .admin-content {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .admin-section {
-            background: white;
-            padding: 30px;
-            border-radius: var(--radius);
-            margin-bottom: 30px;
-            box-shadow: var(--shadow);
-        }
-
-        .admin-section h2 {
-            font-family: var(--font-display);
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: var(--ink);
-        }
-
-        .editable {
-            border: 2px dashed transparent;
-            padding: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .editable:hover {
-            border-color: var(--warm);
-            background: var(--warm-light);
-        }
-
-        .editing {
-            border-color: var(--warm);
-            background: var(--warm-light);
-        }
-
-        .edit-input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid var(--warm);
-            border-radius: 4px;
-            font-size: 16px;
-            font-family: inherit;
-        }
-
-        .edit-textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid var(--warm);
-            border-radius: 4px;
-            font-size: 16px;
-            font-family: inherit;
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .save-btn {
-            margin-top: 10px;
-            padding: 6px 16px;
-            background: var(--green);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .save-btn:hover {
-            background: #4a7c4a;
-        }
-
-        .cancel-btn {
-            margin-top: 10px;
-            margin-right: 10px;
-            padding: 6px 16px;
-            background: #999;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .cancel-btn:hover {
-            background: #777;
-        }
-
-        /* 教师管理 */
-        .teacher-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .teacher-card {
-            background: var(--white);
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            position: relative;
-        }
-
-        .teacher-actions {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            gap: 5px;
-        }
-
-        .action-btn {
-            padding: 4px 8px;
-            font-size: 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .edit-teacher {
-            background: var(--warm);
-            color: white;
-        }
-
-        .delete-teacher {
-            background: #e74c3c;
-            color: white;
-        }
-
-        /* 添加按钮 */
-        .add-btn {
-            padding: 12px 24px;
-            background: var(--green);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-
-        .add-btn:hover {
-            background: #4a7c4a;
-        }
-
-        /* 通知 */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 24px;
-            background: var(--green);
-            color: white;
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
-            z-index: 1000;
-            transform: translateX(400px);
-            transition: transform 0.3s;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        /* 模态框 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: var(--radius);
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h3 {
-            font-family: var(--font-display);
-            font-size: 20px;
-            color: var(--ink);
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--ink-light);
-        }
-
-        .form-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .form-row .form-group {
-            flex: 1;
-            margin-bottom: 0;
-        }
-
-        .course-item {
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-        }
-
-        .course-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .course-actions button {
-            padding: 4px 12px;
-            font-size: 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .edit-stage {
-            background: var(--warm);
-            color: white;
-        }
-
-        .delete-stage {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .add-stage-btn {
-            background: var(--green);
-            color: white;
-        }
+        @media(max-width:768px){.admin-nav{flex-direction:column;gap:10px;}.card-list{grid-template-columns:1fr;}.form-row{flex-direction:column;}.stat-row{grid-template-columns:repeat(2,1fr);}}
     </style>
 </head>
 <body>
-    <!-- 登录界面 -->
-    <div class="login-container" id="loginContainer">
-        <div class="login-box">
-            <h1>🎨 咔乐艺术 - 管理后台</h1>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="adminPassword">管理员密码</label>
-                    <input type="password" id="adminPassword" placeholder="请输入管理密码" required>
-                </div>
-                <button type="submit" class="login-btn">登录</button>
-            </form>
-            <p style="text-align: center; margin-top: 20px; color: var(--ink-light); font-size: 14px;">
-                提示：默认密码是 123456
-            </p>
+
+<!-- 登录界面 -->
+<div class="login-container" id="loginContainer">
+    <div class="login-box">
+        <h1>咔乐艺术 - 管理后台</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>管理员密码</label>
+                <input type="password" id="adminPassword" placeholder="请输入管理密码" required>
+            </div>
+            <button type="submit" class="login-btn">登录</button>
+        </form>
+        <p style="text-align:center;margin-top:16px;color:var(--ink-light);font-size:13px;">默认密码：123456</p>
+    </div>
+</div>
+
+<!-- 管理界面 -->
+<div class="admin-container" id="adminContainer">
+    <header class="admin-header">
+        <div class="admin-nav">
+            <h1>咔乐艺术 · 管理后台</h1>
+            <div class="nav-tabs" id="navTabs">
+                <button class="nav-tab active" data-section="sec-hero">首页</button>
+                <button class="nav-tab" data-section="sec-about">学校简介</button>
+                <button class="nav-tab" data-section="sec-courses">课程体系</button>
+                <button class="nav-tab" data-section="sec-teachers">师资力量</button>
+                <button class="nav-tab" data-section="sec-achievements">学员成果</button>
+                <button class="nav-tab" data-section="sec-campus">校园环境</button>
+                <button class="nav-tab" data-section="sec-admissions">招生信息</button>
+                <button class="nav-tab" data-section="sec-testimonials">家长心声</button>
+                <button class="nav-tab" data-section="sec-faq">常见问题</button>
+                <button class="nav-tab" data-section="sec-contact">联系咨询</button>
+                <button class="nav-tab" data-section="sec-news">新闻动态</button>
+            </div>
+            <button class="logout-btn" onclick="logout()">退出登录</button>
+        </div>
+    </header>
+
+    <div class="admin-content">
+        <!-- ========== 首页横幅 ========== -->
+        <div class="admin-section active" id="sec-hero">
+            <h2>首页横幅</h2>
+            <h3>文字内容</h3>
+            <div class="form-group"><label>徽章文字</label><input type="text" id="heroBadge" onchange="saveField('hero','badge',this.value)"></div>
+            <div class="form-group"><label>标题第一行（不含高亮）</label><input type="text" id="heroTitle1" onchange="saveField('hero','title1',this.value)"></div>
+            <div class="form-group"><label>高亮文字</label><input type="text" id="heroHighlight" onchange="saveField('hero','highlight',this.value)"></div>
+            <div class="form-group"><label>标题第二行</label><input type="text" id="heroTitle2" onchange="saveField('hero','title2',this.value)"></div>
+            <div class="form-group"><label>副标题</label><textarea id="heroSubtitle" onchange="saveField('hero','subtitle',this.value)"></textarea></div>
+            <h3>统计数据</h3>
+            <div id="heroStatsList" class="stat-row"></div>
+            <button class="add-btn" onclick="showAddHeroStatModal()">+ 添加统计数据</button>
+        </div>
+
+        <!-- ========== 学校简介 ========== -->
+        <div class="admin-section" id="sec-about">
+            <h2>学校简介</h2>
+            <h3>标题与正文</h3>
+            <div class="form-group"><label>大标题</label><input type="text" id="aboutTitle" onchange="saveField('about','title',this.value)"></div>
+            <div class="form-group"><label>段落一</label><textarea id="aboutP1" onchange="saveField('about','p1',this.value)"></textarea></div>
+            <div class="form-group"><label>段落二</label><textarea id="aboutP2" onchange="saveField('about','p2',this.value)"></textarea></div>
+            <h3>四大特色</h3>
+            <div id="aboutFeaturesList"></div>
+            <button class="add-btn" onclick="showAddAboutFeatureModal()">+ 添加特色</button>
+        </div>
+
+        <!-- ========== 课程体系 ========== -->
+        <div class="admin-section" id="sec-courses">
+            <h2>课程体系</h2>
+            <div class="form-group"><label>板块副标题</label><input type="text" id="coursesSubtitle" onchange="saveField('coursesSection','subtitle',this.value)"></div>
+            <div class="card-list" id="coursesList"></div>
+            <button class="add-btn" onclick="showCourseModal()">+ 添加课程</button>
+        </div>
+
+        <!-- ========== 师资力量 ========== -->
+        <div class="admin-section" id="sec-teachers">
+            <h2>师资力量</h2>
+            <div class="form-group"><label>板块副标题</label><input type="text" id="teachersSubtitle" onchange="saveField('teachersSection','subtitle',this.value)"></div>
+            <div class="card-list" id="teachersList"></div>
+            <button class="add-btn" onclick="showTeacherModal()">+ 添加教师</button>
+        </div>
+
+        <!-- ========== 学员成果 ========== -->
+        <div class="admin-section" id="sec-achievements">
+            <h2>学员成果</h2>
+            <h3>数据统计</h3>
+            <div id="achievementsStatsList" class="stat-row"></div>
+            <button class="add-btn" onclick="showAddAchieveStatModal()">+ 添加统计数据</button>
+            <h3>成果亮点</h3>
+            <div id="achievementsHighlightsList"></div>
+            <button class="add-btn" onclick="showAddAchieveHighlightModal()">+ 添加成果亮点</button>
+        </div>
+
+        <!-- ========== 校园环境 ========== -->
+        <div class="admin-section" id="sec-campus">
+            <h2>校园环境</h2>
+            <div class="form-group"><label>板块副标题</label><input type="text" id="campusSubtitle" onchange="saveField('campusSection','subtitle',this.value)"></div>
+            <div class="card-list" id="campusList"></div>
+            <button class="add-btn" onclick="showAddCampusModal()">+ 添加校园区域</button>
+        </div>
+
+        <!-- ========== 招生信息 ========== -->
+        <div class="admin-section" id="sec-admissions">
+            <h2>招生信息</h2>
+            <div class="form-group"><label>板块副标题</label><input type="text" id="admissionsSubtitle" onchange="saveField('admissionsSection','subtitle',this.value)"></div>
+            <div class="card-list" id="admissionsList"></div>
+            <button class="add-btn" onclick="showAddAdmissionModal()">+ 添加招生套餐</button>
+        </div>
+
+        <!-- ========== 家长心声 ========== -->
+        <div class="admin-section" id="sec-testimonials">
+            <h2>家长心声</h2>
+            <div class="card-list" id="testimonialsList"></div>
+            <button class="add-btn" onclick="showAddTestimonialModal()">+ 添加家长评价</button>
+        </div>
+
+        <!-- ========== 常见问题 ========== -->
+        <div class="admin-section" id="sec-faq">
+            <h2>常见问题</h2>
+            <div id="faqList"></div>
+            <button class="add-btn" onclick="showAddFaqModal()">+ 添加问题</button>
+        </div>
+
+        <!-- ========== 联系咨询 ========== -->
+        <div class="admin-section" id="sec-contact">
+            <h2>联系咨询</h2>
+            <h3>标题</h3>
+            <div class="form-group"><label>联系标题</label><input type="text" id="contactTitle" onchange="saveField('contact','title',this.value)></div>
+            <div class="form-group"><label>联系副标题</label><input type="text" id="contactSubtitle" onchange="saveField('contact','subtitle',this.value)"></div>
+            <h3>联系方式</h3>
+            <div id="contactItemsList"></div>
+            <button class="add-btn" onclick="showAddContactItemModal()">+ 添加联系方式</button>
+        </div>
+
+        <!-- ========== 新闻动态 ========== -->
+        <div class="admin-section" id="sec-news">
+            <h2>新闻动态</h2>
+            <div class="card-list" id="newsList"></div>
+            <button class="add-btn" onclick="showAddNewsModal()">+ 添加新闻</button>
         </div>
     </div>
+</div>
 
-    <!-- 管理界面 -->
-    <div class="admin-container" id="adminContainer">
-        <header class="admin-header">
-            <div class="admin-nav">
-                <h1>🎨 管理后台</h1>
-                <button class="logout-btn" onclick="logout()">退出登录</button>
-            </div>
-        </header>
+<!-- ═══════════ 模态框 ═══════════ -->
 
-        <div class="admin-content">
-            <!-- 网站基本信息 -->
-            <div class="admin-section">
-                <h2>📝 网站基本信息</h2>
-                <div class="editable" onclick="editText(this, 'siteTitle')">
-                    <h3 id="siteTitle">合肥咔乐艺术培训中心</h3>
-                </div>
-
-                <div class="editable" onclick="editText(this, 'siteSubtitle')" style="margin-top: 15px;">
-                    <p id="siteSubtitle">用爱与专业守护每一个艺术梦想</p>
-                </div>
-
-                <div class="editable" onclick="editText(this, 'siteDescription')" style="margin-top: 15px;">
-                    <p id="siteDescription">合肥咔乐艺术培训中心，专注少儿美术教育。开设水彩、素描、国画、书法、油画等课程，专业师资，小班教学。</p>
-                </div>
-            </div>
-
-            <!-- 课程管理 -->
-            <div class="admin-section">
-                <h2>📚 课程管理</h2>
-                <button class="add-btn" onclick="showAddCourseModal()">+ 添加新课程</button>
-                <div id="coursesList"></div>
-            </div>
-
-            <!-- 教师管理 -->
-            <div class="admin-section">
-                <h2>👥 教师管理</h2>
-                <button class="add-btn" onclick="showAddTeacherModal()">+ 添加新教师</button>
-                <div id="teachersList" class="teacher-grid"></div>
-            </div>
-
-            <!-- 新闻动态 -->
-            <div class="admin-section">
-                <h2>📰 新闻动态</h2>
-                <button class="add-btn" onclick="showAddNewsModal()">+ 添加新闻</button>
-                <div id="newsList"></div>
-            </div>
-        </div>
+<!-- 统计数据模态框 -->
+<div class="modal" id="heroStatModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="heroStatModalTitle">添加统计数据</h3><button class="close-modal" onclick="closeModal('heroStatModal')">&times;</button></div>
+        <div class="form-group"><label>数字</label><input type="text" id="hsNum" placeholder="如：8年"></div>
+        <div class="form-group"><label>标签</label><input type="text" id="hsLabel" placeholder="如：办学经验"></div>
+        <input type="hidden" id="hsIndex" value="-1">
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('heroStatModal')">取消</button><button class="btn-save" onclick="saveHeroStat()">保存</button></div>
     </div>
+</div>
 
-    <!-- 添加/编辑课程模态框 -->
-    <div class="modal" id="courseModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="courseModalTitle">添加新课程</h3>
-                <button class="close-modal" onclick="closeCourseModal()">&times;</button>
-            </div>
-            <form id="courseForm">
-                <div class="form-group">
-                    <label>课程名称</label>
-                    <input type="text" id="courseName" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>授课老师</label>
-                        <input type="text" id="courseTeacher" required>
-                    </div>
-                    <div class="form-group">
-                        <label>年龄段</label>
-                        <input type="text" id="courseAge" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>课程简介</label>
-                    <input type="text" id="courseDesc" required>
-                </div>
-                <div class="form-group">
-                    <label>课程详情</label>
-                    <textarea id="courseDetail" rows="4"></textarea>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>价格</label>
-                        <input type="text" id="coursePrice">
-                    </div>
-                    <div class="form-group">
-                        <label>课时</label>
-                        <input type="text" id="courseDuration">
-                    </div>
-                    <div class="form-group">
-                        <label>班级人数</label>
-                        <input type="text" id="courseClassSize">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>课程阶段</label>
-                    <div id="courseStages"></div>
-                    <button type="button" class="add-btn add-stage-btn" onclick="addCourseStage()">+ 添加阶段</button>
-                </div>
-                <button type="submit" class="save-btn">保存课程</button>
-            </form>
-        </div>
+<!-- 课程模态框 -->
+<div class="modal" id="courseModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="courseModalTitle">添加课程</h3><button class="close-modal" onclick="closeModal('courseModal')">&times;</button></div>
+        <input type="hidden" id="courseId" value="">
+        <div class="form-row"><div class="form-group"><label>课程名称</label><input type="text" id="cName"></div><div class="form-group"><label>图标(emoji)</label><input type="text" id="cIcon"></div></div>
+        <div class="form-row"><div class="form-group"><label>年龄段</label><input type="text" id="cAge"></div><div class="form-group"><label>CSS类名</label><input type="text" id="cClass"></div></div>
+        <div class="form-group"><label>简短描述</label><input type="text" id="cDesc"></div>
+        <div class="form-group"><label>课程详情</label><textarea id="cDetail"></textarea></div>
+        <div class="form-row"><div class="form-group"><label>授课老师</label><input type="text" id="cTeacher"></div><div class="form-group"><label>时长</label><input type="text" id="cDuration"></div></div>
+        <div class="form-row"><div class="form-group"><label>班额</label><input type="text" id="cClassSize"></div><div class="form-group"><label>费用</label><input type="text" id="cPrice"></div></div>
+        <div class="form-group"><label>学习阶段（每行一个，格式：编号|名称）</label><textarea id="cStages" rows="3" placeholder="01|感知色彩&#10;02|自由涂鸦&#10;03|简单造型"></textarea></div>
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('courseModal')">取消</button><button class="btn-save" onclick="saveCourse()">保存</button></div>
     </div>
+</div>
 
-    <!-- 添加/编辑教师模态框 -->
-    <div class="modal" id="teacherModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="teacherModalTitle">添加新教师</h3>
-                <button class="close-modal" onclick="closeTeacherModal()">&times;</button>
-            </div>
-            <form id="teacherForm">
-                <div class="form-group">
-                    <label>教师姓名</label>
-                    <input type="text" id="teacherName" required>
-                </div>
-                <div class="form-group">
-                    <label>一句话标签</label>
-                    <input type="text" id="teacherTagline" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>毕业院校</label>
-                        <input type="text" id="teacherSchool" required>
-                    </div>
-                    <div class="form-group">
-                        <label>学历</label>
-                        <input type="text" id="teacherDegree" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>教师资格证</label>
-                        <input type="text" id="teacherCert" required>
-                    </div>
-                    <div class="form-group">
-                        <label>从教年限</label>
-                        <input type="text" id="teacherYears" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>教学理念</label>
-                    <textarea id="teacherPhilosophy" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>擅长领域</label>
-                    <input type="text" id="teacherSpecialties" placeholder="用逗号分隔">
-                </div>
-                <div class="form-group">
-                    <label>教学成果</label>
-                    <textarea id="teacherAchievements" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>写给家长的话</label>
-                    <textarea id="teacherMessage" rows="4"></textarea>
-                </div>
-                <button type="submit" class="save-btn">保存教师</button>
-            </form>
-        </div>
+<!-- 教师模态框 -->
+<div class="modal" id="teacherModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="teacherModalTitle">添加教师</h3><button class="close-modal" onclick="closeModal('teacherModal')">&times;</button></div>
+        <input type="hidden" id="teacherId" value="">
+        <div class="form-row"><div class="form-group"><label>姓名</label><input type="text" id="tName"></div><div class="form-group"><label>头像(emoji)</label><input type="text" id="tAvatar"></div></div>
+        <div class="form-group"><label>一句话标签</label><input type="text" id="tTagline"></div>
+        <div class="form-row"><div class="form-group"><label>毕业院校</label><input type="text" id="tSchool"></div><div class="form-group"><label>学历</label><input type="text" id="tDegree"></div></div>
+        <div class="form-row"><div class="form-group"><label>教师资格证</label><input type="text" id="tCert"></div><div class="form-group"><label>从教年限</label><input type="text" id="tYears"></div></div>
+        <div class="form-group"><label>担任课程</label><input type="text" id="tRole"></div>
+        <div class="form-group"><label>教学理念</label><textarea id="tPhilosophy"></textarea></div>
+        <div class="form-group"><label>擅长领域（逗号分隔）</label><input type="text" id="tSpecialties"></div>
+        <div class="form-group"><label>教学成果</label><textarea id="tAchievements"></textarea></div>
+        <div class="form-group"><label>教育格言（教师卡片引用）</label><textarea id="tQuote"></textarea></div>
+        <div class="form-group"><label>写给家长的话</label><textarea id="tMessage"></textarea></div>
+        <div class="form-row"><div class="form-group"><label>头像背景CSS类</label><input type="text" id="tAvatarClass" placeholder="t1/t2/t3/t4"></div><div class="form-group"><label>自定义背景色</label><input type="text" id="tAvatarBg" placeholder="如：linear-gradient(135deg,...)"></div></div>
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('teacherModal')">取消</button><button class="btn-save" onclick="saveTeacher()">保存</button></div>
     </div>
+</div>
 
-    <!-- 添加/编辑新闻模态框 -->
-    <div class="modal" id="newsModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="newsModalTitle">添加新闻</h3>
-                <button class="close-modal" onclick="closeNewsModal()">&times;</button>
-            </div>
-            <form id="newsForm">
-                <div class="form-group">
-                    <label>新闻标题</label>
-                    <input type="text" id="newsTitle" required>
-                </div>
-                <div class="form-group">
-                    <label>发布日期</label>
-                    <input type="date" id="newsDate" required>
-                </div>
-                <div class="form-group">
-                    <label>新闻内容</label>
-                    <textarea id="newsContent" rows="6" required></textarea>
-                </div>
-                <button type="submit" class="save-btn">保存新闻</button>
-            </form>
-        </div>
+<!-- 关于特色模态框 -->
+<div class="modal" id="aboutFeatureModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="afModalTitle">添加特色</h3><button class="close-modal" onclick="closeModal('aboutFeatureModal')">&times;</button></div>
+        <div class="form-row"><div class="form-group"><label>图标(emoji)</label><input type="text" id="afIcon"></div><div class="form-group"><label>标题</label><input type="text" id="afTitle"></div></div>
+        <div class="form-group"><label>描述</label><input type="text" id="afDesc"></div>
+        <input type="hidden" id="afIndex" value="-1">
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('aboutFeatureModal')">取消</button><button class="btn-save" onclick="saveAboutFeature()">保存</button></div>
     </div>
-
-    <!-- 通知 -->
-    <div class="notification" id="notification"></div>
-
-    <script>
-        // 管理员密码
-        const ADMIN_PASSWORD = '123456';
-
-        // 从index.html加载的数据
-        let websiteData = {
-            site: {
-                title: '合肥咔乐艺术培训中心',
-                subtitle: '用爱与专业守护每一个艺术梦想',
-                description: '合肥咔乐艺术培训中心，专注少儿美术教育。开设水彩、素描、国画、书法、油画等课程，专业师资，小班教学。'
-            },
-            courses: [
-                {
-                    id: 1,
-                    name: '线描 & 卡漫班',
-                    teacher: '张梦琪',
-                    age: '9-16岁',
-                    desc: '学习线条表现力与漫画创作技巧，培养角色设计和叙事表达能力。',
-                    stages: ['线条基础', '角色设计', '故事创作'],
-                    detail: '系统学习线条的表现力，从基础素描到漫画创作。学习角色设计、分镜绘制和故事叙述，培养动漫创作的综合能力。',
-                    price: '¥2,280/16课时',
-                    duration: '120分钟/次',
-                    classSize: '4-6人'
-                }
-            ],
-            teachers: [
-                {
-                    id: 1,
-                    name: '张梦琪',
-                    tagline: '陪孩子用色彩讲故事的人',
-                    school: '安徽师范大学 · 美术学',
-                    cert: '高级中学美术教师资格证',
-                    years: '8年',
-                    degree: '本科',
-                    philosophy: '我从不教孩子"应该怎么画"，而是帮他们发现"原来我可以这样画"。每个孩子的笔触都是独一无二的语言。',
-                    specialties: '水彩, 儿童创意美术, 素描基础, 绘本创作',
-                    achievements: '辅导学生获合肥市少儿绘画大赛一等奖12人次；所带班级美术考级通过率100%；个人水彩作品《徽州印象》入选安徽省青年美术作品展',
-                    message: '我始终相信，艺术教育不是培养画家，而是培养一个完整的人。在我的课堂上，孩子们学会的不仅是技法，更是观察世界的方式、表达自己的勇气。期待与您一起，守护孩子心中那份对美的本能热爱。'
-                },
-                {
-                    id: 2,
-                    name: '李浩然',
-                    tagline: '让每个孩子都敢大胆下笔',
-                    school: '合肥师范学院 · 美术教育',
-                    cert: '小学美术教师资格证',
-                    years: '5年',
-                    degree: '本科',
-                    philosophy: '绘画不是复制，是创造。我致力于保护孩子的想象力，让技巧自然地服务于表达。',
-                    specialties: '国画入门, 硬笔书法, 创意手工, 综合材料',
-                    achievements: '带领学生参加"全国少儿书画大赛"获金奖3项；个人书法作品获合肥市教师书法展二等奖；开发"趣味水墨"系列课程获家长好评',
-                    message: '教育是一场温暖的修行。看到孩子从"我不会画"到自信地举起作品给我看，是我最有成就感的时刻。请放心把孩子交给我，我们一起见证成长。'
-                },
-                {
-                    id: 3,
-                    name: '王雨桐',
-                    tagline: '用画笔打开孩子的内心世界',
-                    school: '南京艺术学院 · 绘画专业',
-                    cert: '高级中学美术教师资格证',
-                    years: '6年',
-                    degree: '硕士',
-                    philosophy: '艺术教育的本质是"看见"——看见每个孩子的独特，并帮他们看见自己的光芒。',
-                    specialties: '色彩理论, 油画入门, 艺术鉴赏, 考前辅导',
-                    achievements: '辅导多名学生考入知名美院附中；个人油画作品《夏》获安徽省油画展优秀奖；连续3年被评为咔乐艺术"最受欢迎教师"',
-                    message: '每个孩子都是天生的艺术家，只是有些孩子长大后被"教"忘了。我的任务就是帮他们重新找回那份与生俱来的创造力。欢迎随时和我交流孩子的学习情况。'
-                },
-                {
-                    id: 4,
-                    name: '孙瑞',
-                    tagline: '一手好字，自信一生',
-                    school: '安徽职业技术大学 · 软件技术',
-                    cert: '小学美术老师',
-                    years: '5年',
-                    degree: '本科',
-                    philosophy: '我从不教孩子"应该怎么画"，而是帮他们发现"原来我可以这样画"。每个孩子的笔触都是独一无二的语言，老师要做的不是纠正，而是看见和引导。',
-                    specialties: '硬笔书法, 楷书, 行书, 作业快写体',
-                    achievements: '学员书法考级通过率达100%；辅导学员多次荣获全国硬笔书法比赛金奖、银奖、特等奖等重要奖项',
-                    message: '硬笔书法这件事，说到底我们不仅要把每个孩子都练成写字高手。课堂上，我还要在意的是：孩子能不能在横平竖直里学会坐得住、静下来。字写工整了，卷面自然少扣分；但比分数更重要的，是那份不急不躁的定力。'
-                }
-            ],
-            news: [
-                {
-                    id: 1,
-                    title: '2026年春季班招生开始啦！',
-                    date: '2026-03-01',
-                    content: '新学期新气象，咔乐艺术2026年春季班开始招生了！开设水彩、素描、国画、书法等多个课程，欢迎小朋友们报名学习。'
-                }
-            ]
-        };
-
-        // 当前编辑的数据
-        let editingCourse = null;
-        let editingTeacher = null;
-        let editingNews = null;
-        let courseStagesList = [];
-
-        // 登录
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const password = document.getElementById('adminPassword').value;
-            if (password === ADMIN_PASSWORD) {
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('adminContainer').style.display = 'block';
-                renderAll();
-            } else {
-                alert('密码错误！');
-            }
-        });
-
-        // 退出登录
-        function logout() {
-            document.getElementById('loginContainer').style.display = 'flex';
-            document.getElementById('adminContainer').style.display = 'none';
-            document.getElementById('adminPassword').value = '';
-        }
-
-        // 编辑文本
-        function editText(element, field) {
-            const originalContent = element.innerHTML;
-            const isHtml = field === 'siteTitle';
-
-            if (isHtml) {
-                element.innerHTML = `<input type="text" class="edit-input" value="${websiteData.site[field]}" id="edit-${field}">`;
-            } else {
-                element.innerHTML = `<textarea class="edit-textarea" id="edit-${field}">${websiteData.site[field]}</textarea>`;
-            }
-
-            element.classList.add('editing');
-
-            const input = document.getElementById(`edit-${field}`);
-            input.focus();
-
-            element.onclick = null; // 防止再次触发
-
-            const saveBtn = document.createElement('div');
-            saveBtn.innerHTML = `<button class="cancel-btn" onclick="cancelEdit(this, '${field}', \`${originalContent.replace(/`/g, '\\`')}\`)">取消</button><button class="save-btn" onclick="saveText('${field}', this.parentElement.parentElement)">保存</button>`;
-            element.appendChild(saveBtn);
-        }
-
-        // 取消编辑
-        function cancelEdit(btn, field, originalContent) {
-            const element = btn.parentElement.parentElement;
-            element.innerHTML = originalContent;
-            element.classList.remove('editing');
-            element.onclick = () => editText(element, field);
-        }
-
-        // 保存文本
-        function saveText(field, element) {
-            const input = element.querySelector(`#edit-${field}`);
-            websiteData.site[field] = input.value;
-            saveData();
-
-            // 更新页面
-            if (field === 'siteTitle') {
-                document.getElementById('siteTitle').textContent = input.value;
-            } else if (field === 'siteSubtitle') {
-                document.getElementById('siteSubtitle').textContent = input.value;
-            } else if (field === 'siteDescription') {
-                document.getElementById('siteDescription').textContent = input.value;
-            }
-
-            element.classList.remove('editing');
-            element.onclick = () => editText(element, field);
-        }
-
-        // 保存数据并更新主网站
-        function saveData() {
-            // 更新localStorage
-            localStorage.setItem('kaleart_admin_data', JSON.stringify(websiteData));
-
-            // 更新主网站
-            updateMainSite();
-
-            // 显示通知
-            showNotification('保存成功！');
-        }
-
-        // 更新主网站
-        function updateMainSite() {
-            // 这里更新主网站的数据结构
-            const mainSiteData = {
-                site: websiteData.site,
-                courses: websiteData.courses,
-                teachers: websiteData.teachers,
-                news: websiteData.news
-            };
-
-            // 保存到localStorage供主网站使用
-            localStorage.setItem('kaleart_main_data', JSON.stringify(mainSiteData));
-
-            // 更新网站URL参数以触发重新加载
-            const url = new URL(window.location);
-            url.searchParams.set('t', Date.now());
-            window.history.replaceState({}, '', url);
-        }
-
-        // 显示通知
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        // 渲染所有内容
-        function renderAll() {
-            renderCourses();
-            renderTeachers();
-            renderNews();
-        }
-
-        // 渲染课程
-        function renderCourses() {
-            const container = document.getElementById('coursesList');
-            container.innerHTML = websiteData.courses.map(course => `
-                <div class="teacher-card">
-                    <div class="teacher-actions">
-                        <button class="action-btn edit-teacher" onclick="editCourse(${course.id})">编辑</button>
-                        <button class="action-btn delete-teacher" onclick="deleteCourse(${course.id})">删除</button>
-                    </div>
-                    <h3>${course.name}</h3>
-                    <p style="color: var(--warm); margin: 10px 0;">授课老师：${course.teacher}</p>
-                    <p style="color: var(--ink-light); margin: 10px 0;">年龄：${course.age}</p>
-                    <p>${course.desc}</p>
-                </div>
-            `).join('');
-        }
-
-        // 渲染教师
-        function renderTeachers() {
-            const container = document.getElementById('teachersList');
-            container.innerHTML = websiteData.teachers.map(teacher => `
-                <div class="teacher-card">
-                    <div class="teacher-actions">
-                        <button class="action-btn edit-teacher" onclick="editTeacher(${teacher.id})">编辑</button>
-                        <button class="action-btn delete-teacher" onclick="deleteTeacher(${teacher.id})">删除</button>
-                    </div>
-                    <h3>${teacher.name}</h3>
-                    <p style="color: var(--warm); font-size: 14px; margin: 5px 0;">${teacher.tagline}</p>
-                    <p style="color: var(--ink-light); font-size: 12px; margin: 5px 0;">${teacher.school} | ${teacher.years}年</p>
-                    <p style="margin-top: 10px; font-size: 14px;">${teacher.philosophy}</p>
-                </div>
-            `).join('');
-        }
-
-        // 渲染新闻
-        function renderNews() {
-            const container = document.getElementById('newsList');
-            container.innerHTML = websiteData.news.map(news => `
-                <div class="teacher-card" style="margin-bottom: 15px;">
-                    <div class="teacher-actions">
-                        <button class="action-btn edit-teacher" onclick="editNews(${news.id})">编辑</button>
-                        <button class="action-btn delete-teacher" onclick="deleteNews(${news.id})">删除</button>
-                    </div>
-                    <h3>${news.title}</h3>
-                    <p style="color: var(--ink-light); font-size: 14px; margin: 5px 0;">${news.date}</p>
-                    <p style="margin-top: 10px; font-size: 14px;">${news.content}</p>
-                </div>
-            `).join('');
-        }
-
-        // 课程模态框
-        function showAddCourseModal() {
-            editingCourse = null;
-            courseStagesList = [];
-            document.getElementById('courseModalTitle').textContent = '添加新课程';
-            document.getElementById('courseForm').reset();
-            renderCourseStages();
-            document.getElementById('courseModal').style.display = 'flex';
-        }
-
-        function editCourse(id) {
-            const course = websiteData.courses.find(c => c.id === id);
-            if (!course) return;
-
-            editingCourse = course;
-            courseStagesList = [...course.stages];
-
-            document.getElementById('courseModalTitle').textContent = '编辑课程';
-            document.getElementById('courseName').value = course.name;
-            document.getElementById('courseTeacher').value = course.teacher;
-            document.getElementById('courseAge').value = course.age;
-            document.getElementById('courseDesc').value = course.desc;
-            document.getElementById('courseDetail').value = course.detail || '';
-            document.getElementById('coursePrice').value = course.price || '';
-            document.getElementById('courseDuration').value = course.duration || '';
-            document.getElementById('courseClassSize').value = course.classSize || '';
-
-            renderCourseStages();
-            document.getElementById('courseModal').style.display = 'flex';
-        }
-
-        function closeCourseModal() {
-            document.getElementById('courseModal').style.display = 'none';
-        }
-
-        // 添加课程阶段
-        function addCourseStage() {
-            const stage = prompt('阶段名称：');
-            if (stage) {
-                courseStagesList.push(stage);
-                renderCourseStages();
-            }
-        }
-
-        function editCourseStage(index) {
-            const stage = prompt('阶段名称：', courseStagesList[index]);
-            if (stage !== null) {
-                courseStagesList[index] = stage;
-                renderCourseStages();
-            }
-        }
-
-        function deleteCourseStage(index) {
-            courseStagesList.splice(index, 1);
-            renderCourseStages();
-        }
-
-        function renderCourseStages() {
-            const container = document.getElementById('courseStages');
-            container.innerHTML = courseStagesList.map((stage, index) => `
-                <div class="course-item">
-                    <input type="text" value="${stage}" onchange="updateCourseStage(${index}, this.value)">
-                    <div class="course-actions">
-                        <button type="button" class="action-btn edit-stage" onclick="editCourseStage(${index})">编辑</button>
-                        <button type="button" class="action-btn delete-stage" onclick="deleteCourseStage(${index})">删除</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function updateCourseStage(index, value) {
-            courseStagesList[index] = value;
-        }
-
-        // 保存课程
-        document.getElementById('courseForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const courseData = {
-                id: editingCourse ? editingCourse.id : Date.now(),
-                name: document.getElementById('courseName').value,
-                teacher: document.getElementById('courseTeacher').value,
-                age: document.getElementById('courseAge').value,
-                desc: document.getElementById('courseDesc').value,
-                detail: document.getElementById('courseDetail').value,
-                price: document.getElementById('coursePrice').value,
-                duration: document.getElementById('courseDuration').value,
-                classSize: document.getElementById('courseClassSize').value,
-                stages: courseStagesList
-            };
-
-            if (editingCourse) {
-                Object.assign(editingCourse, courseData);
-            } else {
-                websiteData.courses.push(courseData);
-            }
-
-            saveData();
-            renderCourses();
-            closeCourseModal();
-        });
-
-        // 删除课程
-        function deleteCourse(id) {
-            if (confirm('确定要删除这个课程吗？')) {
-                websiteData.courses = websiteData.courses.filter(c => c.id !== id);
-                saveData();
-                renderCourses();
-            }
-        }
-
-        // 教师模态框
-        function showAddTeacherModal() {
-            editingTeacher = null;
-            document.getElementById('teacherModalTitle').textContent = '添加新教师';
-            document.getElementById('teacherForm').reset();
-            document.getElementById('teacherModal').style.display = 'flex';
-        }
-
-        function editTeacher(id) {
-            const teacher = websiteData.teachers.find(t => t.id === id);
-            if (!teacher) return;
-
-            editingTeacher = teacher;
-
-            document.getElementById('teacherModalTitle').textContent = '编辑教师';
-            document.getElementById('teacherName').value = teacher.name;
-            document.getElementById('teacherTagline').value = teacher.tagline;
-            document.getElementById('teacherSchool').value = teacher.school;
-            document.getElementById('teacherDegree').value = teacher.degree;
-            document.getElementById('teacherCert').value = teacher.cert;
-            document.getElementById('teacherYears').value = teacher.years;
-            document.getElementById('teacherPhilosophy').value = teacher.philosophy;
-            document.getElementById('teacherSpecialties').value = teacher.specialties;
-            document.getElementById('teacherAchievements').value = teacher.achievements;
-            document.getElementById('teacherMessage').value = teacher.message;
-
-            document.getElementById('teacherModal').style.display = 'flex';
-        }
-
-        function closeTeacherModal() {
-            document.getElementById('teacherModal').style.display = 'none';
-        }
-
-        // 保存教师
-        document.getElementById('teacherForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const teacherData = {
-                id: editingTeacher ? editingTeacher.id : Date.now(),
-                name: document.getElementById('teacherName').value,
-                tagline: document.getElementById('teacherTagline').value,
-                school: document.getElementById('teacherSchool').value,
-                degree: document.getElementById('teacherDegree').value,
-                cert: document.getElementById('teacherCert').value,
-                years: document.getElementById('teacherYears').value,
-                philosophy: document.getElementById('teacherPhilosophy').value,
-                specialties: document.getElementById('teacherSpecialties').value,
-                achievements: document.getElementById('teacherAchievements').value,
-                message: document.getElementById('teacherMessage').value
-            };
-
-            if (editingTeacher) {
-                Object.assign(editingTeacher, teacherData);
-            } else {
-                websiteData.teachers.push(teacherData);
-            }
-
-            saveData();
-            renderTeachers();
-            closeTeacherModal();
-        });
-
-        // 删除教师
-        function deleteTeacher(id) {
-            if (confirm('确定要删除这位教师吗？')) {
-                websiteData.teachers = websiteData.teachers.filter(t => t.id !== id);
-                saveData();
-                renderTeachers();
-            }
-        }
-
-        // 新闻模态框
-        function showAddNewsModal() {
-            editingNews = null;
-            document.getElementById('newsModalTitle').textContent = '添加新闻';
-            document.getElementById('newsForm').reset();
-            document.getElementById('newsModal').style.display = 'flex';
-        }
-
-        function editNews(id) {
-            const news = websiteData.news.find(n => n.id === id);
-            if (!news) return;
-
-            editingNews = news;
-
-            document.getElementById('newsModalTitle').textContent = '编辑新闻';
-            document.getElementById('newsTitle').value = news.title;
-            document.getElementById('newsDate').value = news.date;
-            document.getElementById('newsContent').value = news.content;
-
-            document.getElementById('newsModal').style.display = 'flex';
-        }
-
-        function closeNewsModal() {
-            document.getElementById('newsModal').style.display = 'none';
-        }
-
-        // 保存新闻
-        document.getElementById('newsForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const newsData = {
-                id: editingNews ? editingNews.id : Date.now(),
-                title: document.getElementById('newsTitle').value,
-                date: document.getElementById('newsDate').value,
-                content: document.getElementById('newsContent').value
-            };
-
-            if (editingNews) {
-                Object.assign(editingNews, newsData);
-            } else {
-                websiteData.news.push(newsData);
-            }
-
-            saveData();
-            renderNews();
-            closeNewsModal();
-        });
-
-        // 删除新闻
-        function deleteNews(id) {
-            if (confirm('确定要删除这条新闻吗？')) {
-                websiteData.news = websiteData.news.filter(n => n.id !== id);
-                saveData();
-                renderNews();
-            }
-        }
-
-        // 点击模态框外部关闭
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
-        }
-    </script>
+</div>
+
+<!-- 成果统计模态框 -->
+<div class="modal" id="achieveStatModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="asModalTitle">添加统计</h3><button class="close-modal" onclick="closeModal('achieveStatModal')">&times;</button></div>
+        <div class="form-group"><label>数字</label><input type="text" id="asNum"></div>
+        <div class="form-group"><label>标签</label><input type="text" id="asLabel"></div>
+        <input type="hidden" id="asIndex" value="-1">
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('achieveStatModal')">取消</button><button class="btn-save" onclick="saveAchieveStat()">保存</button></div>
+    </div>
+</div>
+
+<!-- 成果亮点模态框 -->
+<div class="modal" id="achieveHighlightModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="ahModalTitle">添加亮点</h3><button class="close-modal" onclick="closeModal('achieveHighlightModal')">&times;</button></div>
+        <div class="form-row"><div class="form-group"><label>图标</label><input type="text" id="ahIcon"></div><div class="form-group"><label>标题</label><input type="text" id="ahTitle"></div></div>
+        <div class="form-group"><label>描述</label><input type="text" id="ahDesc"></div>
+        <input type="hidden" id="ahIndex" value="-1">
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('achieveHighlightModal')">取消</button><button class="btn-save" onclick="saveAchieveHighlight()">保存</button></div>
+    </div>
+</div>
+
+<!-- 校园区域模态框 -->
+<div class="modal" id="campusModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="campusModalTitle">添加校园区域</h3><button class="close-modal" onclick="closeModal('campusModal')">&times;</button></div>
+        <div class="form-row"><div class="form-group"><label>图标(emoji)</label><input type="text" id="cmIcon"></div><div class="form-group"><label>名称</label><input type="text" id="cmLabel"></div></div>
+        <input type="hidden" id="cmIndex" value="-1">
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('campusModal')">取消</button><button class="btn-save" onclick="saveCampus()">保存</button></div>
+    </div>
+</div>
+
+<!-- 招生套餐模态框 -->
+<div class="modal" id="admissionModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="adModalTitle">添加招生套餐</h3><button class="close-modal" onclick="closeModal('admissionModal')">&times;</button></div>
+        <div class="form-row"><div class="form-group"><label>标题(含emoji)</label><input type="text" id="adTitle"></div><div class="form-group"><label>价格</label><input type="text" id="adPrice"></div></div>
+        <div class="form-group"><label>价格后缀</label><input type="text" id="adPriceUnit"></div>
+        <div class="form-group"><label>是否热门</label><select id="adFeatured"><option value="0">否</option><option value="1">是</option></select></div>
+        <div class="form-group"><label>特点（每行一个）</label><textarea id="adFeatures" rows="5" placeholder="适合年龄：3-6岁&#10;水彩涂鸦 + 创意手工&#10;每班 8 人以内"></textarea></div>
+        <input type="hidden" id="adIndex" value="-1">
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('admissionModal')">取消</button><button class="btn-save" onclick="saveAdmission()">保存</button></div>
+    </div>
+</div>
+
+<!-- 家长评价模态框 -->
+<div class="modal" id="testimonialModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="tmModalTitle">添加家长评价</h3><button class="close-modal" onclick="closeModal('testimonialModal')">&times;</button></div>
+        <div class="form-group"><label>星级(1-5)</label><input type="number" id="tmStars" min="1" max="5" value="5"></div>
+        <div class="form-group"><label>评价内容</label><textarea id="tmText" rows="4"></textarea></div>
+        <div class="form-group"><label>署名信息</label><input type="text" id="tmAuthor" placeholder="如：—— 小雨妈妈 · 学员7岁 · 学习2年"></div>
+        <input type="hidden" id="tmIndex" value="-1">
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('testimonialModal')">取消</button><button class="btn-save" onclick="saveTestimonial()">保存</button></div>
+    </div>
+</div>
+
+<!-- FAQ模态框 -->
+<div class="modal" id="faqModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="faqModalTitle">添加问题</h3><button class="close-modal" onclick="closeModal('faqModal')">&times;</button></div>
+        <div class="form-group"><label>问题</label><input type="text" id="fQuestion"></div>
+        <div class="form-group"><label>回答</label><textarea id="fAnswer" rows="4"></textarea></div>
+        <input type="hidden" id="fIndex" value="-1">
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('faqModal')">取消</button><button class="btn-save" onclick="saveFaq()">保存</button></div>
+    </div>
+</div>
+
+<!-- 联系方式模态框 -->
+<div class="modal" id="contactItemModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="ciModalTitle">添加联系方式</h3><button class="close-modal" onclick="closeModal('contactItemModal')">&times;</button></div>
+        <div class="form-row"><div class="form-group"><label>图标(emoji)</label><input type="text" id="ciIcon"></div><div class="form-group"><label>标题</label><input type="text" id="ciTitle"></div></div>
+        <div class="form-group"><label>内容</label><input type="text" id="ciContent"></div>
+        <input type="hidden" id="ciIndex" value="-1">
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('contactItemModal')">取消</button><button class="btn-save" onclick="saveContactItem()">保存</button></div>
+    </div>
+</div>
+
+<!-- 新闻模态框 -->
+<div class="modal" id="newsModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="newsModalTitle">添加新闻</h3><button class="close-modal" onclick="closeModal('newsModal')">&times;</button></div>
+        <div class="form-group"><label>标题</label><input type="text" id="nTitle"></div>
+        <div class="form-group"><label>日期</label><input type="date" id="nDate"></div>
+        <div class="form-group"><label>内容</label><textarea id="nContent" rows="4"></textarea></div>
+        <input type="hidden" id="nIndex" value="-1">
+        <div class="btn-row"><button class="btn-cancel" onclick="closeModal('newsModal')">取消</button><button class="btn-save" onclick="saveNews()">保存</button></div>
+    </div>
+</div>
+
+<!-- 通知 -->
+<div class="notification" id="notification"></div>
+
+<script>
+const ADMIN_PASSWORD = '123456';
+
+// ==================== 数据模型 ====================
+let D = {
+    hero: {
+        badge: '✦ 少儿美术教育 ✦',
+        title1: '用',
+        highlight: '爱与专业',
+        title2: '守护每一个艺术梦想',
+        subtitle: '合肥咔乐艺术培训中心 · 专注3-16岁少儿美术教育\n小班教学 · 名师指导 · 让孩子在色彩中自信成长',
+        stats: [
+            {num:'8年',label:'办学经验'},
+            {num:'1000+',label:'培养学员'},
+            {num:'99%',label:'考级通过率'},
+            {num:'12+',label:'获奖人次'}
+        ]
+    },
+    about: {
+        title: '一所真正懂孩子的艺术学校',
+        p1: '合肥咔乐艺术培训中心创办于2018年，是一所经教育部门批准设立的专业少儿美术培训机构。我们坚信：每个孩子都是天生的艺术家，老师的职责是引导而非灌输，是点燃而非填塞。',
+        p2: '我们采用「观察+启发+创作」三位一体的教学法，根据每个孩子的个性与能力定制教学方案，让艺术成为孩子表达自我、认知世界的快乐方式。',
+        features: [
+            {icon:'👩‍🎓',title:'专业师资',desc:'全部持教师资格证上岗'},
+            {icon:'👥',title:'小班教学',desc:'每班6-10人，关注每个孩子'},
+            {icon:'📐',title:'科学体系',desc:'分龄分阶，循序渐进'},
+            {icon:'🏆',title:'成果可见',desc:'定期作品展 + 参赛辅导'}
+        ]
+    },
+    coursesSection: {subtitle:'分龄分阶，从兴趣启蒙到专业进阶'},
+    courses: [
+        {id:1,name:'少儿水彩启蒙班',icon:'🖌️',cls:'watercolor',age:'3-6岁',desc:'通过水彩游戏激发色彩感知，培养观察力与想象力，让孩子在玩中感受色彩魅力。',detail:'以水彩为媒介，通过趣味游戏引导孩子认识颜色、感受色彩变化。课堂设置「色彩小实验」「故事涂鸦」「合作大画」等环节，在玩中建立对美术的第一份好感。',teacher:'张梦琪',duration:'90分钟/次',classSize:'6-8人',price:'¥1,280/16课时',stages:[{step:'01',name:'感知色彩'},{step:'02',name:'自由涂鸦'},{step:'03',name:'简单造型'}]},
+        {id:2,name:'素描进阶班',icon:'✏️',cls:'sketch',age:'7-12岁',desc:'系统学习线条、明暗、透视，打下扎实的造型基础，为后续专业学习做好准备。',detail:'从握笔姿势和线条练习开始，逐步学习几何体、静物、风景素描。每节课配合范画讲解和一对一指导，帮助孩子建立"观察—分析—表达"的完整绘画思维。',teacher:'张梦琪',duration:'120分钟/次',classSize:'8-10人',price:'¥1,680/16课时',stages:[{step:'01',name:'线条基础'},{step:'02',name:'明暗关系'},{step:'03',name:'透视构图'}]},
+        {id:3,name:'国画入门班',icon:'🖋️',cls:'inkart',age:'6-14岁',desc:'从写意花鸟到山水小品，感受中国传统水墨之美，培养文化自信与审美底蕴。',detail:'从认识文房四宝开始，学习执笔、运墨、调色。以花鸟鱼虫为切入点，逐步过渡到山水画创作。融入诗词赏析，让孩子在笔墨间感受传统文化的魅力。',teacher:'李浩然',duration:'120分钟/次',classSize:'8-10人',price:'¥1,680/16课时',stages:[{step:'01',name:'毛笔基础'},{step:'02',name:'写意花鸟'},{step:'03',name:'山水小品'}]},
+        {id:4,name:'硬笔书法班',icon:'📜',cls:'calligraphy',age:'5-12岁',desc:'规范书写姿势与笔法，提升卷面整洁度，同时培养专注力与耐心。',detail:'从纠正坐姿和握笔姿势开始，系统学习基本笔画、偏旁部首和间架结构。配合学校语文课本生字练习，既能写好字又能巩固课堂所学。',teacher:'李浩然',duration:'90分钟/次',classSize:'8-10人',price:'¥1,280/16课时',stages:[{step:'01',name:'坐姿执笔'},{step:'02',name:'基本笔画'},{step:'03',name:'间架结构'}]},
+        {id:5,name:'线描 & 卡漫班',icon:'✏️',cls:'oil',age:'9-16岁',desc:'学习线条表现力与漫画创作技巧，培养角色设计和叙事表达能力。',detail:'系统学习线条的表现力，从基础素描到漫画创作。学习角色设计、分镜绘制和故事叙述，培养动漫创作的综合能力。',teacher:'王雨桐',duration:'120分钟/次',classSize:'4-6人',price:'¥2,280/16课时',stages:[{step:'01',name:'线条基础'},{step:'02',name:'角色设计'},{step:'03',name:'故事创作'}]},
+        {id:6,name:'创意手工 & 绘本创作',icon:'🌈',cls:'creative',age:'4-10岁',desc:'综合运用多种材料，从平面到立体，让孩子动手创造属于自己的故事世界。',detail:'结合撕纸、拼贴、泥塑、综合材料等多种形式，让孩子从"动手玩"过渡到"有想法地创作"。最终每个孩子都能完成一本属于自己的原创绘本故事。',teacher:'张梦琪',duration:'90分钟/次',classSize:'6-8人',price:'¥1,280/16课时',stages:[{step:'01',name:'撕纸拼贴'},{step:'02',name:'立体造型'},{step:'03',name:'完整绘本'}]}
+    ],
+    teachersSection: {subtitle:'用专业与热爱，陪伴每一个孩子的艺术成长'},
+    teachers: [
+        {id:1,name:'张梦琪',avatar:'👩‍🎨',tagline:'陪孩子用色彩讲故事的人',school:'安徽师范大学 · 美术学',degree:'本科',cert:'高级中学美术教师资格证',years:'8年',role:'少儿水彩启蒙班 / 素描进阶班',philosophy:'我从不教孩子"应该怎么画"，而是帮他们发现"原来我可以这样画"。每个孩子的笔触都是独一无二的语言。',specialties:'水彩,儿童创意美术,素描基础,绘本创作',achievements:'辅导学生获合肥市少儿绘画大赛一等奖12人次；所带班级美术考级通过率100%；个人水彩作品《徽州印象》入选安徽省青年美术作品展',quote:'"教育不是灌满一桶水，而是点燃一把火。我从不教孩子\'应该怎么画\'，而是帮他们发现\'原来我可以这样画\'。"',message:'我始终相信，艺术教育不是培养画家，而是培养一个完整的人。在我的课堂上，孩子们学会的不仅是技法，更是观察世界的方式、表达自己的勇气。期待与您一起，守护孩子心中那份对美的本能热爱。',avatarClass:'t1',avatarBg:''},
+        {id:2,name:'李浩然',avatar:'👨‍🏫',tagline:'让每个孩子都敢大胆下笔',school:'合肥师范学院 · 美术教育',degree:'本科',cert:'小学美术教师资格证',years:'5年',role:'国画入门班 / 硬笔书法班',philosophy:'绘画不是复制，是创造。我致力于保护孩子的想象力，让技巧自然地服务于表达。',specialties:'国画入门,硬笔书法,创意手工,综合材料',achievements:'带领学生参加"全国少儿书画大赛"获金奖3项；个人书法作品获合肥市教师书法展二等奖；开发"趣味水墨"系列课程获家长好评',quote:'"绘画不是复制，是创造。我致力于保护孩子的想象力，让技巧自然地服务于表达。"',message:'教育是一场温暖的修行。看到孩子从"我不会画"到自信地举起作品给我看，是我最有成就感的时刻。请放心把孩子交给我，我们一起见证成长。',avatarClass:'t2',avatarBg:''},
+        {id:3,name:'王雨桐',avatar:'👩‍🎓',tagline:'用画笔打开孩子的内心世界',school:'南京艺术学院 · 绘画专业',degree:'硕士',cert:'高级中学美术教师资格证',years:'6年',role:'色彩理论班 / 油画入门班',philosophy:'艺术教育的本质是"看见"——看见每个孩子的独特，并帮他们看见自己的光芒。',specialties:'色彩理论,油画入门,艺术鉴赏,考前辅导',achievements:'辅导多名学生考入知名美院附中；个人油画作品《夏》获安徽省油画展优秀奖；连续3年被评为咔乐艺术"最受欢迎教师"',quote:'"艺术教育的本质是\'看见\'——看见每个孩子的独特，并帮他们看见自己的光芒。"',message:'每个孩子都是天生的艺术家，只是有些孩子长大后被"教"忘了。我的任务就是帮他们重新找回那份与生俱来的创造力。欢迎随时和我交流孩子的学习情况。',avatarClass:'t3',avatarBg:''},
+        {id:4,name:'孙瑞',avatar:'✍️',tagline:'一手好字，自信一生',school:'安徽职业技术大学 · 软件技术',degree:'本科',cert:'小学美术老师',years:'5年',role:'硬笔书法班',philosophy:'我从不教孩子"应该怎么画"，而是帮他们发现"原来我可以这样画"。每个孩子的笔触都是独一无二的语言，老师要做的不是纠正，而是看见和引导。',specialties:'硬笔书法,楷书,行书,作业快写体',achievements:'学员书法考级通过率达100%；辅导学员多次荣获全国硬笔书法比赛金奖、银奖、特等奖等重要奖项',quote:'"不是写快写多，而是让孩子放下急躁，在笔画里慢慢静下来。"',message:'硬笔书法这件事，说到底我们不仅要把每个孩子都练成写字高手。课堂上，我还要在意的是：孩子能不能在横平竖直里学会坐得住、静下来。字写工整了，卷面自然少扣分；但比分数更重要的，是那份不急不躁的定力。',avatarClass:'t4',avatarBg:'linear-gradient(135deg, #e8f0e5, #d4e5cf)'}
+    ],
+    achievements: {
+        stats: [
+            {num:'12+',label:'合肥市少儿绘画大赛一等奖人次'},
+            {num:'99%',label:'美术考级通过率'},
+            {num:'3项',label:'全国少儿书画大赛金奖'},
+            {num:'1000+',label:'累计培养学员'}
+        ],
+        highlights: [
+            {icon:'🏆',title:'安徽省青年美术作品展入选',desc:'张梦琪老师水彩作品《徽州印象》入选省级展览'},
+            {icon:'🎖️',title:'多名学员考入知名美院附中',desc:'王雨桐老师辅导的考前班学员升学成果优异'},
+            {icon:'⭐',title:'连续3年"最受欢迎教师"',desc:'王雨桐老师获评咔乐艺术年度最受欢迎教师'},
+            {icon:'📚',title:'"趣味水墨"系列课程',desc:'李浩然老师自主开发课程获家长一致好评'}
+        ]
+    },
+    campusSection: {subtitle:'安全、舒适、充满艺术氛围的学习空间'},
+    campus: [
+        {icon:'🖼️',label:'水彩画室'},
+        {icon:'📚',label:'绘本阅读角'},
+        {icon:'🎨',label:'油画创作区'},
+        {icon:'🖋️',label:'书法教室'},
+        {icon:'🏠',label:'前台接待区'},
+        {icon:'🌿',label:'户外写生区'}
+    ],
+    admissionsSection: {subtitle:'2026年暑期班火热招生中'},
+    admissions: [
+        {id:1,title:'🎨 兴趣启蒙班',price:'¥1,280',priceUnit:'/ 16课时',featured:false,features:['适合年龄：3-6岁','水彩涂鸦 + 创意手工','每班 8 人以内','每周 1 次，90 分钟/次','免费试听一节']},
+        {id:2,title:'⭐ 综合美术班',price:'¥1,680',priceUnit:'/ 16课时',featured:true,features:['适合年龄：6-12岁','素描 + 水彩 + 国画轮转','每班 10 人以内','每周 1-2 次，120 分钟/次','赠送全套画材']},
+        {id:3,title:'🚀 专业进阶班',price:'¥2,280',priceUnit:'/ 16课时',featured:false,features:['适合年龄：9-16岁','油画 + 色彩理论 + 考前辅导','每班 6 人以内','每周 2 次，120 分钟/次','一对一升学规划']}
+    ],
+    testimonials: [
+        {stars:5,text:'孩子在这儿学了两年了，从不敢下笔到现在每周都盼着来上课。张老师特别有耐心，每次课后都会主动跟我们沟通孩子的进步和需要加强的地方。真心推荐！',author:'—— 小雨妈妈 · 学员7岁 · 学习2年'},
+        {stars:5,text:'对比了好几家美术机构，最终选了咔乐。环境好、老师专业、课程体系科学。最重要的是孩子开心！每次拿着作品出来，眼睛都是亮的。',author:'—— 浩浩爸爸 · 学员5岁 · 学习半年'},
+        {stars:5,text:'王老师太厉害了，我女儿今年顺利考上了美院附中！从零基础到专业水平，每一步都有咔乐老师的陪伴和指导。感谢你们！',author:'—— 思涵妈妈 · 学员14岁 · 学习3年'}
+    ],
+    faq: [
+        {q:'孩子几岁开始学画画比较合适？',a:'3-4岁就可以开始接触涂鸦和色彩游戏，培养感知力；5-6岁可以开始简单的造型训练；7岁以上可以系统学习素描、国画等。最重要的是尊重孩子的兴趣和节奏，不急于求成。'},
+        {q:'试听课怎么预约？收费吗？',a:'试听课完全免费！您可以通过电话、微信联系我们，告知孩子年龄和感兴趣的方向，我们会安排最适合的老师和时段。试听后不报名也没有任何压力。'},
+        {q:'一个班几个孩子？老师顾得过来吗？',a:'启蒙班不超过8人，综合班不超过10人，进阶班不超过6人。我们坚持小班教学，确保每位老师能关注到每个孩子的学习状态，给予个性化指导。'},
+        {q:'画材需要自己准备吗？',a:'综合美术班和专业进阶班学费已包含全部画材费用，孩子直接来上课即可。启蒙班我们也会提供基础画材，如有额外需求老师会提前通知。'}
+    ],
+    contact: {
+        title:'欢迎预约免费试听，带孩子来感受艺术的魅力',
+        subtitle:'CONTACT',
+        items: [
+            {icon:'📍',title:'地址',content:'合肥市（具体地址请电话咨询）'},
+            {icon:'📞',title:'电话',content:'138-0000-0000'},
+            {icon:'💬',title:'微信',content:'kaleart2026（添加请备注"咨询课程"）'},
+            {icon:'🕐',title:'咨询时间',content:'周二至周日 9:00-18:00'}
+        ]
+    },
+    news: [
+        {title:'2026年春季班招生开始啦！',date:'2026-03-01',content:'新学期新气象，咔乐艺术2026年春季班开始招生了！开设水彩、素描、国画、书法等多个课程，欢迎小朋友们报名学习。'}
+    ]
+};
+
+function loadData(){
+    const s = localStorage.getItem('kaleart_admin_data');
+    if(s){ try{ D = JSON.parse(s); }catch(e){} }
+}
+function saveData(){
+    localStorage.setItem('kaleart_admin_data', JSON.stringify(D));
+    localStorage.setItem('kaleart_main_data', JSON.stringify(D));
+    showNotification('保存成功！');
+}
+function showNotification(m,err){
+    const n = document.getElementById('notification');
+    n.textContent = m; n.className = 'notification show' + (err?' error':'');
+    setTimeout(()=>n.classList.remove('show'), 2500);
+}
+
+// ═══════ 登录 ═══════
+document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    if(document.getElementById('adminPassword').value === ADMIN_PASSWORD){
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('adminContainer').style.display = 'block';
+        loadData(); refreshAll(); switchTab('sec-hero');
+    } else { alert('密码错误！'); }
+});
+function logout(){
+    document.getElementById('loginContainer').style.display = 'flex';
+    document.getElementById('adminContainer').style.display = 'none';
+    document.getElementById('adminPassword').value = '';
+}
+
+// ═══════ 标签切换 ═══════
+function switchTab(id){
+    document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    const sec = document.getElementById(id);
+    if(sec) sec.classList.add('active');
+    const tab = document.querySelector(`[data-section="${id}"]`);
+    if(tab) tab.classList.add('active');
+}
+document.getElementById('navTabs').addEventListener('click', function(e){
+    if(e.target.classList.contains('nav-tab')) switchTab(e.target.dataset.section);
+});
+
+// ═══════ 通用：关闭模态框 ═══════
+function closeModal(id){ document.getElementById(id).style.display = 'none'; }
+window.onclick = function(e){ if(e.target.classList.contains('modal')) e.target.style.display = 'none'; }
+
+// ═══════ 保存字段 ═══════
+function saveField(section, field, value){
+    if(section.includes('Section')){
+        D[section][field] = value;
+    } else if(D[section] && typeof D[section] === 'object' && !Array.isArray(D[section])){
+        D[section][field] = value;
+    }
+    saveData();
+}
+
+// ═══════ 刷新所有页面 ═══════
+function refreshAll(){
+    refreshHero(); refreshAbout(); refreshCourses(); refreshTeachers();
+    refreshAchievements(); refreshCampus(); refreshAdmissions();
+    refreshTestimonials(); refreshFaq(); refreshContact(); refreshNews();
+}
+
+// ── Hero ──
+function refreshHero(){
+    document.getElementById('heroBadge').value = D.hero.badge;
+    document.getElementById('heroTitle1').value = D.hero.title1;
+    document.getElementById('heroHighlight').value = D.hero.highlight;
+    document.getElementById('heroTitle2').value = D.hero.title2;
+    document.getElementById('heroSubtitle').value = D.hero.subtitle;
+    renderHeroStats();
+}
+function renderHeroStats(){
+    const c = document.getElementById('heroStatsList');
+    c.innerHTML = D.hero.stats.map((s,i)=>`<div class="stat-item"><strong>${s.num}</strong><br><small>${s.label}</small><div style="margin-top:6px"><button class="action-btn btn-edit" onclick="editHeroStat(${i})">编辑</button> <button class="action-btn btn-del" onclick="delHeroStat(${i})">删除</button></div></div>`).join('');
+}
+function showAddHeroStatModal(){
+    document.getElementById('heroStatModalTitle').textContent='添加统计数据';
+    document.getElementById('hsNum').value=''; document.getElementById('hsLabel').value='';
+    document.getElementById('hsIndex').value='-1';
+    document.getElementById('heroStatModal').style.display='flex';
+}
+function editHeroStat(i){
+    document.getElementById('heroStatModalTitle').textContent='编辑统计数据';
+    document.getElementById('hsNum').value = D.hero.stats[i].num;
+    document.getElementById('hsLabel').value = D.hero.stats[i].label;
+    document.getElementById('hsIndex').value = i;
+    document.getElementById('heroStatModal').style.display='flex';
+}
+function delHeroStat(i){ D.hero.stats.splice(i,1); saveData(); renderHeroStats(); }
+function saveHeroStat(){
+    const d = {num:document.getElementById('hsNum').value, label:document.getElementById('hsLabel').value};
+    const i = parseInt(document.getElementById('hsIndex').value);
+    if(i>=0) D.hero.stats[i]=d; else D.hero.stats.push(d);
+    saveData(); renderHeroStats(); closeModal('heroStatModal');
+}
+
+// ── About ──
+function refreshAbout(){
+    document.getElementById('aboutTitle').value = D.about.title;
+    document.getElementById('aboutP1').value = D.about.p1;
+    document.getElementById('aboutP2').value = D.about.p2;
+    renderAboutFeatures();
+}
+function renderAboutFeatures(){
+    document.getElementById('aboutFeaturesList').innerHTML = D.about.features.map((f,i)=>`<div class="item-row"><span style="font-size:1.5rem">${f.icon}</span><div class="content"><strong>${f.title}</strong><br><small>${f.desc}</small></div><div class="item-actions"><button class="action-btn btn-edit" onclick="editAboutFeature(${i})">编辑</button><button class="action-btn btn-del" onclick="delAboutFeature(${i})">删除</button></div></div>`).join('');
+}
+function showAddAboutFeatureModal(){
+    document.getElementById('afModalTitle').textContent='添加特色';
+    document.getElementById('afIcon').value=''; document.getElementById('afTitle').value='';
+    document.getElementById('afDesc').value=''; document.getElementById('afIndex').value='-1';
+    document.getElementById('aboutFeatureModal').style.display='flex';
+}
+function editAboutFeature(i){
+    const f = D.about.features[i];
+    document.getElementById('afModalTitle').textContent='编辑特色';
+    document.getElementById('afIcon').value=f.icon; document.getElementById('afTitle').value=f.title;
+    document.getElementById('afDesc').value=f.desc; document.getElementById('afIndex').value=i;
+    document.getElementById('aboutFeatureModal').style.display='flex';
+}
+function delAboutFeature(i){ D.about.features.splice(i,1); saveData(); renderAboutFeatures(); }
+function saveAboutFeature(){
+    const d = {icon:document.getElementById('afIcon').value, title:document.getElementById('afTitle').value, desc:document.getElementById('afDesc').value};
+    const i = parseInt(document.getElementById('afIndex').value);
+    if(i>=0) D.about.features[i]=d; else D.about.features.push(d);
+    saveData(); renderAboutFeatures(); closeModal('aboutFeatureModal');
+}
+
+// ── Courses ──
+function refreshCourses(){
+    document.getElementById('coursesSubtitle').value = D.coursesSection.subtitle;
+    renderCourses();
+}
+function renderCourses(){
+    document.getElementById('coursesList').innerHTML = D.courses.map((c,i)=>`<div class="card-item"><div class="card-actions"><button class="action-btn btn-edit" onclick="editCourse(${i})">编辑</button><button class="action-btn btn-del" onclick="delCourse(${i})">删除</button></div><h4>${c.icon} ${c.name}</h4><div class="meta">${c.age} | 授课：${c.teacher} | ${c.price}</div><div class="meta" style="margin-top:4px">${c.desc.substring(0,40)}...</div></div>`).join('');
+}
+function showCourseModal(i){
+    document.getElementById('courseId').value = i!==undefined ? i : '';
+    if(i!==undefined){
+        const c = D.courses[i];
+        document.getElementById('courseModalTitle').textContent='编辑课程';
+        document.getElementById('cName').value=c.name; document.getElementById('cIcon').value=c.icon;
+        document.getElementById('cAge').value=c.age; document.getElementById('cClass').value=c.cls;
+        document.getElementById('cDesc').value=c.desc; document.getElementById('cDetail').value=c.detail;
+        document.getElementById('cTeacher').value=c.teacher; document.getElementById('cDuration').value=c.duration;
+        document.getElementById('cClassSize').value=c.classSize; document.getElementById('cPrice').value=c.price;
+        document.getElementById('cStages').value=c.stages.map(s=>s.step+'|'+s.name).join('\n');
+    } else {
+        document.getElementById('courseModalTitle').textContent='添加课程';
+        ['cName','cIcon','cAge','cClass','cDesc','cDetail','cTeacher','cDuration','cClassSize','cPrice','cStages'].forEach(id=>document.getElementById(id).value='');
+    }
+    document.getElementById('courseModal').style.display='flex';
+}
+function saveCourse(){
+    const stages = document.getElementById('cStages').value.split('\n').filter(l=>l.trim()).map(l=>{const p=l.split('|');return{step:p[0]||'',name:p[1]||''}});
+    const d = {
+        id: Date.now(),
+        name:document.getElementById('cName').value, icon:document.getElementById('cIcon').value,
+        cls:document.getElementById('cClass').value, age:document.getElementById('cAge').value,
+        desc:document.getElementById('cDesc').value, detail:document.getElementById('cDetail').value,
+        teacher:document.getElementById('cTeacher').value, duration:document.getElementById('cDuration').value,
+        classSize:document.getElementById('cClassSize').value, price:document.getElementById('cPrice').value,
+        stages:stages
+    };
+    const id = document.getElementById('courseId').value;
+    if(id!==''){ d.id = D.courses[parseInt(id)].id; D.courses[parseInt(id)] = d; }
+    else D.courses.push(d);
+    saveData(); renderCourses(); closeModal('courseModal');
+}
+function editCourse(i){ showCourseModal(i); }
+function delCourse(i){ if(confirm('确定删除"' + D.courses[i].name + '"吗？')){ D.courses.splice(i,1); saveData(); renderCourses(); } }
+
+// ── Teachers ──
+function refreshTeachers(){
+    document.getElementById('teachersSubtitle').value = D.teachersSection.subtitle;
+    renderTeachers();
+}
+function renderTeachers(){
+    document.getElementById('teachersList').innerHTML = D.teachers.map((t,i)=>`<div class="card-item"><div class="card-actions"><button class="action-btn btn-edit" onclick="editTeacher(${i})">编辑</button><button class="action-btn btn-del" onclick="delTeacher(${i})">删除</button></div><h4>${t.avatar} ${t.name}</h4><div class="meta">${t.tagline}</div><div class="meta">${t.school} | ${t.years}</div></div>`).join('');
+}
+function showTeacherModal(i){
+    document.getElementById('teacherId').value = i!==undefined ? i : '';
+    const ids = ['tName','tAvatar','tTagline','tSchool','tDegree','tCert','tYears','tRole','tPhilosophy','tSpecialties','tAchievements','tQuote','tMessage','tAvatarClass','tAvatarBg'];
+    if(i!==undefined){
+        document.getElementById('teacherModalTitle').textContent='编辑教师';
+        const t = D.teachers[i];
+        ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.value = t[id.replace('t','').charAt(0).toLowerCase()+id.slice(2)] || ''; });
+        document.getElementById('tName').value=t.name; document.getElementById('tAvatar').value=t.avatar;
+        document.getElementById('tTagline').value=t.tagline; document.getElementById('tSchool').value=t.school;
+        document.getElementById('tDegree').value=t.degree; document.getElementById('tCert').value=t.cert;
+        document.getElementById('tYears').value=t.years; document.getElementById('tRole').value=t.role;
+        document.getElementById('tPhilosophy').value=t.philosophy; document.getElementById('tSpecialties').value=t.specialties;
+        document.getElementById('tAchievements').value=t.achievements; document.getElementById('tQuote').value=t.quote;
+        document.getElementById('tMessage').value=t.message; document.getElementById('tAvatarClass').value=t.avatarClass||'';
+        document.getElementById('tAvatarBg').value=t.avatarBg||'';
+    } else {
+        document.getElementById('teacherModalTitle').textContent='添加教师';
+        ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    }
+    document.getElementById('teacherModal').style.display='flex';
+}
+function saveTeacher(){
+    const d = {
+        id: Date.now(),
+        name:document.getElementById('tName').value, avatar:document.getElementById('tAvatar').value,
+        tagline:document.getElementById('tTagline').value, school:document.getElementById('tSchool').value,
+        degree:document.getElementById('tDegree').value, cert:document.getElementById('tCert').value,
+        years:document.getElementById('tYears').value, role:document.getElementById('tRole').value,
+        philosophy:document.getElementById('tPhilosophy').value, specialties:document.getElementById('tSpecialties').value,
+        achievements:document.getElementById('tAchievements').value, quote:document.getElementById('tQuote').value,
+        message:document.getElementById('tMessage').value, avatarClass:document.getElementById('tAvatarClass').value,
+        avatarBg:document.getElementById('tAvatarBg').value
+    };
+    const id = document.getElementById('teacherId').value;
+    if(id!==''){ d.id = D.teachers[parseInt(id)].id; D.teachers[parseInt(id)] = d; }
+    else D.teachers.push(d);
+    saveData(); renderTeachers(); closeModal('teacherModal');
+}
+function editTeacher(i){ showTeacherModal(i); }
+function delTeacher(i){ if(confirm('确定删除"' + D.teachers[i].name + '"吗？')){ D.teachers.splice(i,1); saveData(); renderTeachers(); } }
+
+// ── Achievements ──
+function refreshAchievements(){
+    renderAchieveStats(); renderAchieveHighlights();
+}
+function renderAchieveStats(){
+    document.getElementById('achievementsStatsList').innerHTML = D.achievements.stats.map((s,i)=>`<div class="stat-item"><strong>${s.num}</strong><br><small>${s.label}</small><div style="margin-top:6px"><button class="action-btn btn-edit" onclick="editAchieveStat(${i})">编辑</button> <button class="action-btn btn-del" onclick="delAchieveStat(${i})">删除</button></div></div>`).join('');
+}
+function renderAchieveHighlights(){
+    document.getElementById('achievementsHighlightsList').innerHTML = D.achievements.highlights.map((h,i)=>`<div class="item-row"><span style="font-size:1.5rem">${h.icon}</span><div class="content"><strong>${h.title}</strong><br><small>${h.desc}</small></div><div class="item-actions"><button class="action-btn btn-edit" onclick="editAchieveHighlight(${i})">编辑</button><button class="action-btn btn-del" onclick="delAchieveHighlight(${i})">删除</button></div></div>`).join('');
+}
+function showAddAchieveStatModal(){
+    document.getElementById('asModalTitle').textContent='添加统计'; document.getElementById('asNum').value='';
+    document.getElementById('asLabel').value=''; document.getElementById('asIndex').value='-1';
+    document.getElementById('achieveStatModal').style.display='flex';
+}
+function editAchieveStat(i){
+    document.getElementById('asModalTitle').textContent='编辑统计';
+    document.getElementById('asNum').value=D.achievements.stats[i].num;
+    document.getElementById('asLabel').value=D.achievements.stats[i].label;
+    document.getElementById('asIndex').value=i;
+    document.getElementById('achieveStatModal').style.display='flex';
+}
+function delAchieveStat(i){ D.achievements.stats.splice(i,1); saveData(); renderAchieveStats(); }
+function saveAchieveStat(){
+    const d={num:document.getElementById('asNum').value, label:document.getElementById('asLabel').value};
+    const i=parseInt(document.getElementById('asIndex').value);
+    if(i>=0) D.achievements.stats[i]=d; else D.achievements.stats.push(d);
+    saveData(); renderAchieveStats(); closeModal('achieveStatModal');
+}
+function showAddAchieveHighlightModal(){
+    document.getElementById('ahModalTitle').textContent='添加亮点'; document.getElementById('ahIcon').value='';
+    document.getElementById('ahTitle').value=''; document.getElementById('ahDesc').value='';
+    document.getElementById('ahIndex').value='-1';
+    document.getElementById('achieveHighlightModal').style.display='flex';
+}
+function editAchieveHighlight(i){
+    document.getElementById('ahModalTitle').textContent='编辑亮点';
+    document.getElementById('ahIcon').value=D.achievements.highlights[i].icon;
+    document.getElementById('ahTitle').value=D.achievements.highlights[i].title;
+    document.getElementById('ahDesc').value=D.achievements.highlights[i].desc;
+    document.getElementById('ahIndex').value=i;
+    document.getElementById('achieveHighlightModal').style.display='flex';
+}
+function delAchieveHighlight(i){ D.achievements.highlights.splice(i,1); saveData(); renderAchieveHighlights(); }
+function saveAchieveHighlight(){
+    const d={icon:document.getElementById('ahIcon').value, title:document.getElementById('ahTitle').value, desc:document.getElementById('ahDesc').value};
+    const i=parseInt(document.getElementById('ahIndex').value);
+    if(i>=0) D.achievements.highlights[i]=d; else D.achievements.highlights.push(d);
+    saveData(); renderAchieveHighlights(); closeModal('achieveHighlightModal');
+}
+
+// ── Campus ──
+function refreshCampus(){
+    document.getElementById('campusSubtitle').value = D.campusSection.subtitle;
+    renderCampus();
+}
+function renderCampus(){
+    document.getElementById('campusList').innerHTML = D.campus.map((c,i)=>`<div class="card-item"><div class="card-actions"><button class="action-btn btn-edit" onclick="editCampus(${i})">编辑</button><button class="action-btn btn-del" onclick="delCampus(${i})">删除</button></div><h4 style="font-size:2rem">${c.icon}</h4><div>${c.label}</div></div>`).join('');
+}
+function showAddCampusModal(){
+    document.getElementById('campusModalTitle').textContent='添加校园区域'; document.getElementById('cmIcon').value='';
+    document.getElementById('cmLabel').value=''; document.getElementById('cmIndex').value='-1';
+    document.getElementById('campusModal').style.display='flex';
+}
+function editCampus(i){
+    document.getElementById('campusModalTitle').textContent='编辑校园区域';
+    document.getElementById('cmIcon').value=D.campus[i].icon;
+    document.getElementById('cmLabel').value=D.campus[i].label;
+    document.getElementById('cmIndex').value=i;
+    document.getElementById('campusModal').style.display='flex';
+}
+function delCampus(i){ D.campus.splice(i,1); saveData(); renderCampus(); }
+function saveCampus(){
+    const d={icon:document.getElementById('cmIcon').value, label:document.getElementById('cmLabel').value};
+    const i=parseInt(document.getElementById('cmIndex').value);
+    if(i>=0) D.campus[i]=d; else D.campus.push(d);
+    saveData(); renderCampus(); closeModal('campusModal');
+}
+
+// ── Admissions ──
+function refreshAdmissions(){
+    document.getElementById('admissionsSubtitle').value = D.admissionsSection.subtitle;
+    renderAdmissions();
+}
+function renderAdmissions(){
+    document.getElementById('admissionsList').innerHTML = D.admissions.map((a,i)=>`<div class="card-item"><div class="card-actions"><button class="action-btn btn-edit" onclick="editAdmission(${i})">编辑</button><button class="action-btn btn-del" onclick="delAdmission(${i})">删除</button></div><h4>${a.title} ${a.featured?'🏷️热门':''}</h4><div class="meta" style="font-size:1.2rem;color:var(--warm);font-weight:700">${a.price}<span style="font-size:0.8rem;font-weight:400">${a.priceUnit}</span></div><div class="meta">${a.features.join(' | ')}</div></div>`).join('');
+}
+function showAddAdmissionModal(i){
+    document.getElementById('adIndex').value = i!==undefined ? i : '';
+    if(i!==undefined){
+        document.getElementById('adModalTitle').textContent='编辑招生套餐';
+        const a = D.admissions[i];
+        document.getElementById('adTitle').value=a.title; document.getElementById('adPrice').value=a.price;
+        document.getElementById('adPriceUnit').value=a.priceUnit; document.getElementById('adFeatured').value=a.featured?'1':'0';
+        document.getElementById('adFeatures').value=a.features.join('\n');
+    } else {
+        document.getElementById('adModalTitle').textContent='添加招生套餐';
+        document.getElementById('adTitle').value=''; document.getElementById('adPrice').value='';
+        document.getElementById('adPriceUnit').value=''; document.getElementById('adFeatured').value='0';
+        document.getElementById('adFeatures').value='';
+    }
+    document.getElementById('admissionModal').style.display='flex';
+}
+function saveAdmission(){
+    const d={
+        id:Date.now(),
+        title:document.getElementById('adTitle').value, price:document.getElementById('adPrice').value,
+        priceUnit:document.getElementById('adPriceUnit').value,
+        featured:document.getElementById('adFeatured').value==='1',
+        features:document.getElementById('adFeatures').value.split('\n').filter(l=>l.trim())
+    };
+    const id=document.getElementById('adIndex').value;
+    if(id!==''){ d.id=D.admissions[parseInt(id)].id; D.admissions[parseInt(id)]=d; }
+    else D.admissions.push(d);
+    saveData(); renderAdmissions(); closeModal('admissionModal');
+}
+function editAdmission(i){ showAddAdmissionModal(i); }
+function delAdmission(i){ if(confirm('确定删除这个套餐吗？')){ D.admissions.splice(i,1); saveData(); renderAdmissions(); } }
+
+// ── Testimonials ──
+function refreshTestimonials(){ renderTestimonials(); }
+function renderTestimonials(){
+    document.getElementById('testimonialsList').innerHTML = D.testimonials.map((t,i)=>`<div class="card-item"><div class="card-actions"><button class="action-btn btn-edit" onclick="editTestimonial(${i})">编辑</button><button class="action-btn btn-del" onclick="delTestimonial(${i})">删除</button></div><div style="color:var(--gold)">${'★'.repeat(t.stars)}${'☆'.repeat(5-t.stars)}</div><p style="margin:8px 0">${t.text.substring(0,60)}...</p><div class="meta">${t.author}</div></div>`).join('');
+}
+function showAddTestimonialModal(i){
+    document.getElementById('tmIndex').value = i!==undefined ? i : '';
+    if(i!==undefined){
+        document.getElementById('tmModalTitle').textContent='编辑家长评价';
+        document.getElementById('tmStars').value=D.testimonials[i].stars;
+        document.getElementById('tmText').value=D.testimonials[i].text;
+        document.getElementById('tmAuthor').value=D.testimonials[i].author;
+    } else {
+        document.getElementById('tmModalTitle').textContent='添加家长评价';
+        document.getElementById('tmStars').value='5'; document.getElementById('tmText').value='';
+        document.getElementById('tmAuthor').value='';
+    }
+    document.getElementById('testimonialModal').style.display='flex';
+}
+function saveTestimonial(){
+    const d={stars:parseInt(document.getElementById('tmStars').value), text:document.getElementById('tmText').value, author:document.getElementById('tmAuthor').value};
+    const i=parseInt(document.getElementById('tmIndex').value);
+    if(i>=0) D.testimonials[i]=d; else D.testimonials.push(d);
+    saveData(); renderTestimonials(); closeModal('testimonialModal');
+}
+function editTestimonial(i){ showAddTestimonialModal(i); }
+function delTestimonial(i){ if(confirm('确定删除这条评价吗？')){ D.testimonials.splice(i,1); saveData(); renderTestimonials(); } }
+
+// ── FAQ ──
+function refreshFaq(){ renderFaq(); }
+function renderFaq(){
+    document.getElementById('faqList').innerHTML = D.faq.map((f,i)=>`<div class="item-row"><div class="content"><strong>Q: ${f.q}</strong><br><small>A: ${f.a.substring(0,80)}...</small></div><div class="item-actions"><button class="action-btn btn-edit" onclick="editFaq(${i})">编辑</button><button class="action-btn btn-del" onclick="delFaq(${i})">删除</button></div></div>`).join('');
+}
+function showAddFaqModal(i){
+    document.getElementById('fIndex').value = i!==undefined ? i : '';
+    if(i!==undefined){
+        document.getElementById('faqModalTitle').textContent='编辑问题';
+        document.getElementById('fQuestion').value=D.faq[i].q;
+        document.getElementById('fAnswer').value=D.faq[i].a;
+    } else {
+        document.getElementById('faqModalTitle').textContent='添加问题';
+        document.getElementById('fQuestion').value=''; document.getElementById('fAnswer').value='';
+    }
+    document.getElementById('faqModal').style.display='flex';
+}
+function saveFaq(){
+    const d={q:document.getElementById('fQuestion').value, a:document.getElementById('fAnswer').value};
+    const i=parseInt(document.getElementById('fIndex').value);
+    if(i>=0) D.faq[i]=d; else D.faq.push(d);
+    saveData(); renderFaq(); closeModal('faqModal');
+}
+function editFaq(i){ showAddFaqModal(i); }
+function delFaq(i){ if(confirm('确定删除这个问题吗？')){ D.faq.splice(i,1); saveData(); renderFaq(); } }
+
+// ── Contact ──
+function refreshContact(){
+    document.getElementById('contactTitle').value = D.contact.title;
+    document.getElementById('contactSubtitle').value = D.contact.subtitle;
+    renderContactItems();
+}
+function renderContactItems(){
+    document.getElementById('contactItemsList').innerHTML = D.contact.items.map((c,i)=>`<div class="item-row"><span style="font-size:1.5rem">${c.icon}</span><div class="content"><strong>${c.title}</strong><br><small>${c.content}</small></div><div class="item-actions"><button class="action-btn btn-edit" onclick="editContactItem(${i})">编辑</button><button class="action-btn btn-del" onclick="delContactItem(${i})">删除</button></div></div>`).join('');
+}
+function showAddContactItemModal(i){
+    document.getElementById('ciIndex').value = i!==undefined ? i : '';
+    if(i!==undefined){
+        document.getElementById('ciModalTitle').textContent='编辑联系方式';
+        document.getElementById('ciIcon').value=D.contact.items[i].icon;
+        document.getElementById('ciTitle').value=D.contact.items[i].title;
+        document.getElementById('ciContent').value=D.contact.items[i].content;
+    } else {
+        document.getElementById('ciModalTitle').textContent='添加联系方式';
+        document.getElementById('ciIcon').value=''; document.getElementById('ciTitle').value='';
+        document.getElementById('ciContent').value='';
+    }
+    document.getElementById('contactItemModal').style.display='flex';
+}
+function saveContactItem(){
+    const d={icon:document.getElementById('ciIcon').value, title:document.getElementById('ciTitle').value, content:document.getElementById('ciContent').value};
+    const i=parseInt(document.getElementById('ciIndex').value);
+    if(i>=0) D.contact.items[i]=d; else D.contact.items.push(d);
+    saveData(); renderContactItems(); closeModal('contactItemModal');
+}
+function editContactItem(i){ showAddContactItemModal(i); }
+function delContactItem(i){ if(confirm('确定删除这个联系方式吗？')){ D.contact.items.splice(i,1); saveData(); renderContactItems(); } }
+
+// ── News ──
+function refreshNews(){ renderNews(); }
+function renderNews(){
+    document.getElementById('newsList').innerHTML = D.news.map((n,i)=>`<div class="card-item"><div class="card-actions"><button class="action-btn btn-edit" onclick="editNews(${i})">编辑</button><button class="action-btn btn-del" onclick="delNews(${i})">删除</button></div><h4>${n.title}</h4><div class="meta">${n.date}</div><p style="margin-top:4px;font-size:13px">${n.content.substring(0,50)}...</p></div>`).join('');
+}
+function showAddNewsModal(i){
+    document.getElementById('nIndex').value = i!==undefined ? i : '';
+    if(i!==undefined){
+        document.getElementById('newsModalTitle').textContent='编辑新闻';
+        document.getElementById('nTitle').value=D.news[i].title;
+        document.getElementById('nDate').value=D.news[i].date;
+        document.getElementById('nContent').value=D.news[i].content;
+    } else {
+        document.getElementById('newsModalTitle').textContent='添加新闻';
+        document.getElementById('nTitle').value=''; document.getElementById('nDate').value='';
+        document.getElementById('nContent').value='';
+    }
+    document.getElementById('newsModal').style.display='flex';
+}
+function saveNews(){
+    const d={title:document.getElementById('nTitle').value, date:document.getElementById('nDate').value, content:document.getElementById('nContent').value};
+    const i=parseInt(document.getElementById('nIndex').value);
+    if(i>=0) D.news[i]=d; else D.news.push(d);
+    saveData(); renderNews(); closeModal('newsModal');
+}
+function editNews(i){ showAddNewsModal(i); }
+function delNews(i){ if(confirm('确定删除这条新闻吗？')){ D.news.splice(i,1); saveData(); renderNews(); } }
+</script>
 </body>
 </html>

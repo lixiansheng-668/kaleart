@@ -1096,6 +1096,7 @@ footer strong { color: rgba(255,255,255,0.8); }
 
 <button class="back-top" id="backTop" aria-label="回到顶部">↑</button>
 
+<script src="data.js"></script>
 <script>
 // ── Nav scroll effect ──
 const nav = document.getElementById('nav');
@@ -1146,12 +1147,21 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 // Reveal hero on load
 document.querySelector('.hero-content').classList.add('visible');
 
-// ── 数据同步：从admin.html同步数据 ──
+// ── 数据同步：优先加载data.js，其次localStorage ──
 function loadWebsiteData() {
-    const adminData = localStorage.getItem('kaleart_main_data');
-    if (!adminData) return;
+    let data = null;
+    // 优先使用 data.js 中嵌入的数据（管理员发布后的正式内容）
+    if (typeof SITE_DATA !== 'undefined' && SITE_DATA) {
+        data = SITE_DATA;
+    } else {
+        // 其次使用 localStorage（管理员本地预览）
+        const adminData = localStorage.getItem('kaleart_main_data');
+        if (adminData) {
+            try { data = JSON.parse(adminData); } catch(e) {}
+        }
+    }
+    if (!data) return;
     try {
-        const data = JSON.parse(adminData);
         if (data.hero) updateHero(data.hero);
         if (data.about) updateAbout(data.about);
         if (data.courses && data.courses.length > 0) updateCourses(data.courses);

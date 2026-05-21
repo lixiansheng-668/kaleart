@@ -119,7 +119,7 @@
                 <button class="nav-tab" data-section="sec-contact">联系咨询</button>
                 <button class="nav-tab" data-section="sec-news">新闻动态</button>
             </div>
-            <a href="index.html" target="_blank" style="color:#fff;text-decoration:underline;margin-right:16px;font-size:13px;">查看网站 →</a><button class="logout-btn" onclick="logout()">退出登录</button>
+            <a href="index.html" target="_blank" style="color:#fff;text-decoration:underline;margin-right:12px;font-size:13px;">查看网站 →</a><button class="logout-btn" style="margin-right:8px;" onclick="showPublishPanel()">发布到网站</button><button class="logout-btn" onclick="logout()">退出登录</button>
         </div>
     </header>
 
@@ -386,6 +386,28 @@
         <div class="form-group"><label>内容</label><textarea id="nContent" rows="4"></textarea></div>
         <input type="hidden" id="nIndex" value="-1">
         <div class="btn-row"><button class="btn-cancel" onclick="closeModal('newsModal')">取消</button><button class="btn-save" onclick="saveNews()">保存</button></div>
+    </div>
+</div>
+
+<!-- 发布面板 -->
+<div class="modal" id="publishModal">
+    <div class="modal-content">
+        <div class="modal-header"><h3>发布到网站</h3><button class="close-modal" onclick="closeModal('publishModal')">&times;</button></div>
+        <p style="font-size:14px;color:var(--ink-light);margin-bottom:16px;">发布后，所有访客（家长）都能看到你修改的内容。</p>
+        <div class="form-group">
+            <label>GitHub Token</label>
+            <input type="password" id="ghToken" placeholder="输入你的 GitHub Personal Access Token">
+            <small style="color:var(--ink-light);">没有？<a href="https://github.com/settings/tokens/new?scopes=repo&description=kaleart-publish" target="_blank" style="color:var(--warm);">点此创建一个</a>，勾选 repo 权限即可。</small>
+        </div>
+        <div class="form-group">
+            <label>仓库路径</label>
+            <input type="text" id="ghRepo" placeholder="lixiansheng-668/kaleart" value="lixiansheng-668/kaleart">
+        </div>
+        <div id="publishStatus" style="font-size:13px;margin-bottom:12px;"></div>
+        <div class="btn-row">
+            <button class="btn-cancel" onclick="closeModal('publishModal')">取消</button>
+            <button class="btn-save" onclick="doPublish()">发布到网站</button>
+        </div>
     </div>
 </div>
 
@@ -988,6 +1010,79 @@ function saveNews(){
 }
 function editNews(i){ showAddNewsModal(i); }
 function delNews(i){ if(confirm('确定删除这条新闻吗？')){ D.news.splice(i,1); saveData(); renderNews(); } }
+
+// ═══════ 发布到网站 ═══════
+function showPublishPanel(){
+    document.getElementById('ghToken').value = localStorage.getItem('kaleart_gh_token')||'';
+    document.getElementById('ghRepo').value = localStorage.getItem('kaleart_gh_repo')||'lixiansheng-668/kaleart';
+    document.getElementById('publishStatus').innerHTML = '';
+    document.getElementById('publishModal').style.display = 'flex';
+}
+
+async function doPublish(){
+    const token = document.getElementById('ghToken').value.trim();
+    const repo = document.getElementById('ghRepo').value.trim();
+    const status = document.getElementById('publishStatus');
+
+    if(!token){ status.innerHTML='<span style="color:#e74c3c;">请输入 GitHub Token</span>'; return; }
+    if(!repo){ status.innerHTML='<span style="color:#e74c3c;">请输入仓库路径</span>'; return; }
+
+    // 保存设置
+    localStorage.setItem('kaleart_gh_token', token);
+    localStorage.setItem('kaleart_gh_repo', repo);
+
+    // 确保数据是最新的
+    saveData();
+
+    // 生成 data.js 内容
+    const dataJson = JSON.stringify(D);
+    const content = 'var SITE_DATA = ' + dataJson + ';';
+    const base64Content = btoa(unescape(encodeURIComponent(content)));
+
+    status.innerHTML = '<span style="color:#d4846a;">正在发布...</span>';
+
+    try {
+        // 先获取文件 SHA（如果存在）
+        let sha = '';
+        try {
+            const resp = await fetch('https://api.github.com/repos/' + repo + '/contents/data.js', {
+                headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if(resp.ok){
+                const info = await resp.json();
+                sha = info.sha;
+            }
+        } catch(e){}
+
+        // 上传文件
+        const body = {
+            message: '更新网站内容 [' + new Date().toLocaleString('zh-CN') + ']',
+            content: base64Content,
+            branch: 'main'
+        };
+        if(sha) body.sha = sha;
+
+        const putResp = await fetch('https://api.github.com/repos/' + repo + '/contents/data.js', {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        if(putResp.ok){
+            status.innerHTML = '<span style="color:#5b8c5a;">发布成功！约30秒后访客可看到更新。</span>';
+            showNotification('发布成功！网站内容已更新。');
+        } else {
+            const err = await putResp.json();
+            status.innerHTML = '<span style="color:#e74c3c;">发布失败：' + (err.message||'未知错误') + '</span>';
+        }
+    } catch(e){
+        status.innerHTML = '<span style="color:#e74c3c;">网络错误：' + e.message + '</span>';
+    }
+}
 </script>
 </body>
 </html>

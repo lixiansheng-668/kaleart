@@ -316,8 +316,16 @@
 <div class="modal" id="campusModal">
     <div class="modal-content">
         <div class="modal-header"><h3 id="campusModalTitle">添加校园区域</h3><button class="close-modal" onclick="closeModal('campusModal')">&times;</button></div>
-        <div class="form-row"><div class="form-group"><label>图标(emoji)</label><input type="text" id="cmIcon"></div><div class="form-group"><label>名称</label><input type="text" id="cmLabel"></div></div>
+        <div class="form-group"><label>名称</label><input type="text" id="cmLabel" placeholder="如：水彩画室"></div>
+        <div class="form-group"><label>图标(emoji，无图片时显示)</label><input type="text" id="cmIcon" placeholder="如：🖼️"></div>
+        <div class="form-group">
+            <label>上传照片</label>
+            <input type="file" id="cmImage" accept="image/*" onchange="previewCampusImage()" style="padding:8px;">
+            <div id="cmImagePreview" style="margin-top:8px;max-width:200px;display:none;"></div>
+            <button type="button" class="action-btn btn-del" id="cmRemoveImage" style="display:none;margin-top:6px;" onclick="removeCampusImage()">移除照片</button>
+        </div>
         <input type="hidden" id="cmIndex" value="-1">
+        <input type="hidden" id="cmImageData" value="">
         <div class="btn-row"><button class="btn-cancel" onclick="closeModal('campusModal')">取消</button><button class="btn-save" onclick="saveCampus()">保存</button></div>
     </div>
 </div>
@@ -445,12 +453,12 @@ let D = {
     },
     campusSection: {subtitle:'安全、舒适、充满艺术氛围的学习空间'},
     campus: [
-        {icon:'🖼️',label:'水彩画室'},
-        {icon:'📚',label:'绘本阅读角'},
-        {icon:'🎨',label:'油画创作区'},
-        {icon:'🖋️',label:'书法教室'},
-        {icon:'🏠',label:'前台接待区'},
-        {icon:'🌿',label:'户外写生区'}
+        {icon:'🖼️',label:'水彩画室',image:''},
+        {icon:'📚',label:'绘本阅读角',image:''},
+        {icon:'🎨',label:'油画创作区',image:''},
+        {icon:'🖋️',label:'书法教室',image:''},
+        {icon:'🏠',label:'前台接待区',image:''},
+        {icon:'🌿',label:'户外写生区',image:''}
     ],
     admissionsSection: {subtitle:'2026年暑期班火热招生中'},
     admissions: [
@@ -763,25 +771,67 @@ function refreshCampus(){
     renderCampus();
 }
 function renderCampus(){
-    document.getElementById('campusList').innerHTML = D.campus.map((c,i)=>`<div class="card-item"><div class="card-actions"><button class="action-btn btn-edit" onclick="editCampus(${i})">编辑</button><button class="action-btn btn-del" onclick="delCampus(${i})">删除</button></div><h4 style="font-size:2rem">${c.icon}</h4><div>${c.label}</div></div>`).join('');
+    document.getElementById('campusList').innerHTML = D.campus.map((c,i)=>{
+        const preview = c.image ? `<div style="width:100%;height:120px;border-radius:8px;background:url(${c.image}) center/cover no-repeat;margin-bottom:8px;"></div>` : `<div style="font-size:2rem;">${c.icon||'🏫'}</div>`;
+        return `<div class="card-item"><div class="card-actions"><button class="action-btn btn-edit" onclick="editCampus(${i})">编辑</button><button class="action-btn btn-del" onclick="delCampus(${i})">删除</button></div>${preview}<div><strong>${c.label}</strong>${c.image?' <span style="font-size:11px;color:var(--green);">📷 有照片</span>':''}</div></div>`;
+    }).join('');
+}
+function previewCampusImage(){
+    const file = document.getElementById('cmImage').files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+        document.getElementById('cmImageData').value = e.target.result;
+        const preview = document.getElementById('cmImagePreview');
+        preview.innerHTML = `<img src="${e.target.result}" style="width:100%;border-radius:8px;">`;
+        preview.style.display = 'block';
+        document.getElementById('cmRemoveImage').style.display = 'inline-block';
+    };
+    reader.readAsDataURL(file);
+}
+function removeCampusImage(){
+    document.getElementById('cmImageData').value = '';
+    document.getElementById('cmImage').value = '';
+    document.getElementById('cmImagePreview').style.display = 'none';
+    document.getElementById('cmRemoveImage').style.display = 'none';
 }
 function showAddCampusModal(){
-    document.getElementById('campusModalTitle').textContent='添加校园区域'; document.getElementById('cmIcon').value='';
-    document.getElementById('cmLabel').value=''; document.getElementById('cmIndex').value='-1';
+    document.getElementById('campusModalTitle').textContent='添加校园区域';
+    document.getElementById('cmIcon').value=''; document.getElementById('cmLabel').value='';
+    document.getElementById('cmIndex').value='-1'; document.getElementById('cmImageData').value='';
+    document.getElementById('cmImage').value=''; document.getElementById('cmImagePreview').style.display='none';
+    document.getElementById('cmRemoveImage').style.display='none';
     document.getElementById('campusModal').style.display='flex';
 }
 function editCampus(i){
     document.getElementById('campusModalTitle').textContent='编辑校园区域';
-    document.getElementById('cmIcon').value=D.campus[i].icon;
+    document.getElementById('cmIcon').value=D.campus[i].icon||'';
     document.getElementById('cmLabel').value=D.campus[i].label;
     document.getElementById('cmIndex').value=i;
+    document.getElementById('cmImageData').value = D.campus[i].image||'';
+    document.getElementById('cmImage').value = '';
+    const preview = document.getElementById('cmImagePreview');
+    const rmBtn = document.getElementById('cmRemoveImage');
+    if(D.campus[i].image){
+        preview.innerHTML = `<img src="${D.campus[i].image}" style="width:100%;border-radius:8px;">`;
+        preview.style.display = 'block';
+        rmBtn.style.display = 'inline-block';
+    } else {
+        preview.style.display = 'none';
+        rmBtn.style.display = 'none';
+    }
     document.getElementById('campusModal').style.display='flex';
 }
-function delCampus(i){ D.campus.splice(i,1); saveData(); renderCampus(); }
+function delCampus(i){ if(confirm('确定删除"'+D.campus[i].label+'"吗？')){ D.campus.splice(i,1); saveData(); renderCampus(); } }
 function saveCampus(){
-    const d={icon:document.getElementById('cmIcon').value, label:document.getElementById('cmLabel').value};
+    const d={
+        icon:document.getElementById('cmIcon').value,
+        label:document.getElementById('cmLabel').value,
+        image:document.getElementById('cmImageData').value||''
+    };
     const i=parseInt(document.getElementById('cmIndex').value);
-    if(i>=0) D.campus[i]=d; else D.campus.push(d);
+    if(i>=0){ D.campus[i].icon=d.icon; D.campus[i].label=d.label; D.campus[i].image=d.image; }
+    else D.campus.push(d);
     saveData(); renderCampus(); closeModal('campusModal');
 }
 

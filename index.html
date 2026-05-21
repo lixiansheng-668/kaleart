@@ -1279,7 +1279,12 @@ function updateAchievements(ach){
 function updateCampus(campus){
     const grid = document.querySelector('.campus-grid');
     if(!grid) return;
-    grid.innerHTML = campus.map(c=>'<div class="campus-card reveal"><div>'+c.icon+'</div><div class="label">'+c.label+'</div></div>').join('');
+    grid.innerHTML = campus.map(c=>{
+        if(c.image){
+            return '<div class="campus-card reveal" style="background:url('+c.image+') center/cover no-repeat;"><div class="label">'+c.label+'</div></div>';
+        }
+        return '<div class="campus-card reveal"><div>'+c.icon+'</div><div class="label">'+c.label+'</div></div>';
+    }).join('');
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 }
 

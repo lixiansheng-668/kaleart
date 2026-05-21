@@ -1367,6 +1367,22 @@ function updateNews(news){
 
 window.addEventListener('load', loadWebsiteData);
 window.addEventListener('popstate', loadWebsiteData);
+
+// 监听localStorage变化，后台保存后自动刷新页面
+window.addEventListener('storage', function(e) {
+    if (e.key === 'kaleart_main_data' && e.newValue) {
+        loadWebsiteData();
+        // 重新绑定FAQ事件
+        document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', function handler() {
+                const item = btn.parentElement;
+                const wasOpen = item.classList.contains('open');
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+                if (!wasOpen) item.classList.add('open');
+            });
+        });
+    }
+});
 </script>
 
 </body>
